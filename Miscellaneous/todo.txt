@@ -1,0 +1,25 @@
+Top priority:
+-check for late binding
+
+
+Secondary priority:
+-should rawreferences really be gridreferences?
+-array formula/operator support
+-3D references
+-test invalid formulas
+-handle circular references with dynamic references
+-implement non-grid source references
+
+Done:
+-add/subtract number from date
+-expose named ref result
+-expose recalculate for variable
+-implement reference list
+-make errorvaluewrapper serializable
+-code serialization test
+-implement grammar types
+-make parser non-static
+
+Notes:
+-need reference valid field otherwise all references created on-the-fly will be invalid!
+-can't range link to range because that makes all ranges non-sources!

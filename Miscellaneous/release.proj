@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="CustomTasks.dll" TaskName="CustomTasks.SetAssemblyVersion" />
+  <UsingTask AssemblyFile="CustomTasks.dll" TaskName="CustomTasks.WriteTemplateText" />
+  <PropertyGroup>
+    <ProductName>FormulaEngine</ProductName>
+    <Version>0.2.0.0</Version>
+    <ReleaseDir>$(ProductName)-$(Version)</ReleaseDir>
+    <ReleaseName>$(ProductName)-$(Version)</ReleaseName>
+    <SourceDir>$(ReleaseDir)\src</SourceDir>
+    <LibDir>$(ReleaseDir)\lib</LibDir>
+    <DemoDir>$(ReleaseDir)\demo</DemoDir>
+    <ReadmeFile>$(SourceDir)\Miscellaneous\Readme.txt</ReadmeFile>
+    <ReleaseNotesFile>$(ReleaseDir)\ReleaseNotes.txt</ReleaseNotesFile>
+    <ReleaseReadmeFile>$(ReleaseDir)\Readme.txt</ReleaseReadmeFile>
+    </PropertyGroup>
+  <Target Name="Release">
+    <RemoveDir Directories="$(ReleaseDir)"></RemoveDir>
+    <MakeDir Directories="$(ReleaseDir)"></MakeDir>
+    <CallTarget Targets="FetchSource"></CallTarget>
+    <CallTarget Targets="Documents"></CallTarget>
+    <RemoveDir Directories="$(SourceDir)\Miscellaneous"></RemoveDir>
+    <SetAssemblyVersion Version="$(Version)" TargetDir="$(SourceDir)\lib"></SetAssemblyVersion>
+    <CallTarget Targets="src"></CallTarget>
+    <CallTarget Targets="lib"></CallTarget>
+    <CallTarget Targets="demo"></CallTarget>
+  </Target>
+  <Target Name="lib">
+    <MSBuild Projects="$(SourceDir)\lib\lib.vbproj" Properties="OutputPath=..\..\lib"></MSBuild>
+    <Copy SourceFiles="..\Miscellaneous\Documentation.chm" DestinationFolder="$(LibDir)"></Copy>
+    <Exec Command="pkzip -silent -add -rec -path $(ReleaseName)-lib.zip $(LibDir)\*.*"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-lib.zip $(ReleaseReadmeFile)"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-lib.zip $(ReleaseNotesFile)"></Exec>
+  </Target>
+  <Target Name="demo">
+    <MSBuild Projects="$(SourceDir)\GridSample\GridSample.vbproj" Properties="OutputPath=..\..\demo"></MSBuild>
+    <Exec Command="del $(DemoDir)\*.xml"></Exec>
+    <Exec Command="pkzip -silent -add -rec -path $(ReleaseName)-demo.zip $(DemoDir)\*.*"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-demo.zip $(ReleaseReadmeFile)"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-demo.zip $(ReleaseNotesFile)"></Exec>
+  </Target>
+  <Target Name="src">
+    <Exec Command="pkzip -silent -add -rec -path $(ReleaseName)-src.zip $(SourceDir)\*.*"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-src.zip $(ReleaseReadmeFile)"></Exec>
+    <Exec Command="pkzip -add -path $(ReleaseName)-src.zip $(ReleaseNotesFile)"></Exec>
+  </Target>
+  <Target Name="FetchSource">
+    <Exec Command="svn export https://formulaengine.svn.sourceforge.net/svnroot/formulaengine/trunk $(SourceDir)"></Exec>
+  </Target>
+  <Target Name="Documents">
+    <WriteTemplateText Version="$(Version)" Target="$(ReadmeFile)"></WriteTemplateText>
+    <Copy SourceFiles="$(ReadmeFile)" DestinationFolder="$(ReleaseDir)"></Copy>
+    <Copy SourceFiles="$(SourceDir)\Miscellaneous\ReleaseNotes.txt" DestinationFolder="$(ReleaseDir)"></Copy>
+    </Target>
+</Project>

@@ -1,0 +1,468 @@
+' Test how we handle references moving around and row/col insert/deletes
+' Test range move with single cell reference
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†b2;1;1•FirstReferenceEqualValidator†c3
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†e4;1;1•FirstReferenceEqualValidator†b2
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†c3;-1;-1•FirstReferenceInvalidValidator†
+'CreateFormulaExecutor†a1;b2•MoveRangeExecutor†b2;-1;-1•NoDependenciesValidator†
+'  Test move of multiple singe cells
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†a1:b2;2;0•FirstReferenceEqualValidator†b4
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†a1:b2;0;2•FirstReferenceEqualValidator†d2
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†a1:b2;2;2•FirstReferenceEqualValidator†d4
+' Test range move with range reference; test source range
+' Simple move of the whole range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;4;4•FirstReferenceEqualValidator†g8:i10
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b3:f7;5;0•FirstReferenceEqualValidator†c9:e11
+' Overlapping moves
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;1;0•FirstReferenceEqualValidator†c5:e7
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;-1;0•FirstReferenceEqualValidator†c3:e5
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;0;1•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;0;-1•FirstReferenceEqualValidator†b4:d6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;2;0•FirstReferenceEqualValidator†c6:e8
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;-2;0•FirstReferenceEqualValidator†c2:e4
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;0;2•FirstReferenceEqualValidator†e4:g6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;0;-2•FirstReferenceEqualValidator†a4:c6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;2;2•FirstReferenceEqualValidator†e6:g8
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;-2;2•FirstReferenceEqualValidator†e2:g4
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;-2;-2•FirstReferenceEqualValidator†a2:c4
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;2;-2•FirstReferenceEqualValidator†a6:c8
+' Overlapping moves that move the whole range
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d8;0;2•FirstReferenceEqualValidator†d3:f8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d8;5;2•FirstReferenceEqualValidator†d8:f13
+' Moves that don't expand the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e4;-1;1•FirstReferenceEqualValidator†c4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c6:e6;1;1•FirstReferenceEqualValidator†c4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:c6;1;-1•FirstReferenceEqualValidator†c4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e4:e6;1;1•FirstReferenceEqualValidator†c4:E6
+' Moves that expand the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e4;-1;0•FirstReferenceEqualValidator†c3:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e4:e6;0;1•FirstReferenceEqualValidator†c4:f6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d4:e6;0;2•FirstReferenceEqualValidator†c4:g6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c3:c7;0;-1•FirstReferenceEqualValidator†B4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:c6;0;-1•FirstReferenceEqualValidator†B4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c3:d7;0;-2•FirstReferenceEqualValidator†a4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c6:e6;1;0•FirstReferenceEqualValidator†c4:E7
+' Moves within the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d4:d6;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4;2;2•FirstReferenceEqualValidator†C4:E6
+' Individual cell moves that shouldn't change the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e6;0;3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d6;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c6;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4;-1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d4;-1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4;-1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c5;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c6;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e4;0;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e5;0;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e6;0;1•FirstReferenceEqualValidator†C4:E6
+' Moves that don't affect the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f7;1;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f7:g8;2;3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b2;1;0•NumDependenciesValidator†1
+' Moves that don't change the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d5;3;1•FirstReferenceEqualValidator†C4:E6
+' Move the range onto itself
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c4:e6;0;0•FirstReferenceEqualValidator†C4:E6
+' Test destination move
+' One cell into range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f8;-2;-2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b7;-1;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b3;1;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f4;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f4;0;-2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f4;0;-3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b5;0;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b5;0;2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b5;0;3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b6;0;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b6;0;2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b6;0;3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d3;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c3;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e3;3;0•FirstReferenceEqualValidator†C4:E6
+' Range move that doesn't change the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f8:f10;-2;-2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f8:f10;-4;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†f8:f10;-4;-2•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b4:b6;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;D4:F6•MoveRangeExecutor†c4:c6;0;-2•FirstReferenceEqualValidator†D4:F6
+CreateFormulaExecutor†a1;E4:G6•MoveRangeExecutor†D4:D6;0;-3•FirstReferenceEqualValidator†E4:G6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c1:c3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c1:c3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c1:c3;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d1:d3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d1:d3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†d1:d3;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e1:e3;1;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e1:e3;2;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†e1:e3;3;0•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b5:b6;0;-1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;D4:F6•MoveRangeExecutor†c5:c6;0;-2•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b1:c3;3;1•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†e3:f8;0;-2•FirstReferenceEqualValidator†b3:d8
+' Moves onto an edge that shouldn't change the range
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†g3:h7;0;-3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†g4:h6;0;-3•FirstReferenceEqualValidator†C4:E6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†b3:c7;0;2•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†b4:c6;0;2•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†c8:g9;-3;0•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†d8:f9;-3;0•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†c1:g2;3;0•FirstReferenceEqualValidator†d4:f6
+CreateFormulaExecutor†a1;d4:f6•MoveRangeExecutor†d1:f2;3;0•FirstReferenceEqualValidator†d4:f6
+' Dest range move that shrinks the target range
+'	1 deep
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b1:c3;3;0•FirstReferenceEqualValidator†d4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c1:e2;2;0•FirstReferenceEqualValidator†c5:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†g4:h6;0;-2•FirstReferenceEqualValidator†c4:d6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c8:e9;-2;0•FirstReferenceEqualValidator†c4:e5
+'	2 deep
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†b1:d3;3;0•FirstReferenceEqualValidator†e4:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c1:e3;2;0•FirstReferenceEqualValidator†c6:E6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†g4:i6;0;-3•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:E6•MoveRangeExecutor†c8:e10;-3;0•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†e3:g8;0;-2•FirstReferenceEqualValidator†b3:b8
+' Test moves with degenerate cell ranges
+' -Moves of cell range
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4;1;0•FirstReferenceEqualValidator†c5:c5
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4;0;1•FirstReferenceEqualValidator†d4:d4
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4;-1;0•FirstReferenceEqualValidator†c3:c3
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4;0;-1•FirstReferenceEqualValidator†b4:b4
+' -Moves onto cell range
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†d4;0;-1•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c5;-1;0•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†b4;0;1•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c3;1;0•FirstReferenceInvalidValidator†
+' -Moves containing range
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4:d5;1;1•FirstReferenceEqualValidator†d5:d5
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4:d5;0;-1•FirstReferenceEqualValidator†b4:b4
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4:d5;0;1•FirstReferenceEqualValidator†d4:d4
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4:d5;1;0•FirstReferenceEqualValidator†c5:c5
+CreateFormulaExecutor†a1;C4:c4•MoveRangeExecutor†c4:d5;-1;0•FirstReferenceEqualValidator†c3:c3
+' Moves onto cell range
+CreateFormulaExecutor†a1;C4:e6•MoveRangeExecutor†g4:j7;0;-4•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;C4:e6•MoveRangeExecutor†f4:h6;0;-3•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c3:d8•MoveRangeExecutor†d8:f13;-5;-2•FirstReferenceInvalidValidator†
+' Moves with line ranges overwritting range
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†d4:d6;0;-1•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†c3:e3;1;0•FirstReferenceInvalidValidator†
+' Moves with line ranges out of range
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c4;-1;-1•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c5;0;1•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c6;2;2•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†c4;-1;-2•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†d4;-1;-2•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†e4;-2;-2•FirstReferenceEqualValidator†c4:e4
+' Moves with line ranges within range
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c4;1;0•FirstReferenceEqualValidator†c5:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c4;2;0•FirstReferenceEqualValidator†c5:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c5;-1;0•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c6;-1;0•FirstReferenceEqualValidator†c4:c5
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†c6;-2;0•FirstReferenceEqualValidator†c4:c5
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†c4;0;1•FirstReferenceEqualValidator†d4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†c4;0;2•FirstReferenceEqualValidator†d4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†d4;0;-1•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†e4;0;-1•FirstReferenceEqualValidator†c4:d4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†e4;0;-2•FirstReferenceEqualValidator†c4:d4
+' Moves with line ranges into range that don't change the range
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†b3;1;1•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†b3;2;1•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†b3;3;1•FirstReferenceEqualValidator†c4:c6
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†b3;1;1•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†b3;1;2•FirstReferenceEqualValidator†c4:e4
+CreateFormulaExecutor†a1;C4:e4•MoveRangeExecutor†b3;1;3•FirstReferenceEqualValidator†c4:e4
+' Moves with line ranges into range that shrink the range
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†b2:b3;1;1•FirstReferenceEqualValidator†c5:c6
+CreateFormulaExecutor†a1;C4:c6•MoveRangeExecutor†b2:b4;1;1•FirstReferenceEqualValidator†c6:c6
+' Test column removes for cell range reference
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†4;2•FirstReferenceEqualValidator†C1:d1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†3;1•FirstReferenceEqualValidator†C1:e1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†2;2•FirstReferenceEqualValidator†b1:d1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†3;2•FirstReferenceEqualValidator†C1:D1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†7;1•FirstReferenceEqualValidator†C1:F1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†6;1•FirstReferenceEqualValidator†C1:E1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†6;2•FirstReferenceEqualValidator†C1:E1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†5;2•FirstReferenceEqualValidator†C1:D1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†4;4•FirstReferenceEqualValidator†C1:C1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†3;3•FirstReferenceEqualValidator†C1:C1
+CreateFormulaExecutor†a1;c1:C1•RemoveColumnsExecutor†2;1•FirstReferenceEqualValidator†b1:b1
+CreateFormulaExecutor†a1;c1:f1•RemoveColumnsExecutor†3;4•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c1:c1•RemoveColumnsExecutor†3;1•FirstReferenceInvalidValidator†
+' Test column removes for single cell reference
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†2;1•FirstReferenceEqualValidator†B1
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†4;2•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†3;4•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†3;1•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†2;3•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c1•RemoveColumnsExecutor†2;2•FirstReferenceInvalidValidator†
+' Test column inserts for cell range reference
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†2;1•FirstReferenceEqualValidator†D1:G1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†3;1•FirstReferenceEqualValidator†D1:G1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†7;1•FirstReferenceEqualValidator†C1:F1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†6;1•FirstReferenceEqualValidator†C1:G1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†4;1•FirstReferenceEqualValidator†C1:G1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†4;2•FirstReferenceEqualValidator†C1:H1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†4;4•FirstReferenceEqualValidator†C1:J1
+CreateFormulaExecutor†a1;c1:f1•InsertColumnsExecutor†3;4•FirstReferenceEqualValidator†g1:j1
+CreateFormulaExecutor†a1;c1:C1•InsertColumnsExecutor†2;1•FirstReferenceEqualValidator†D1:D1
+' Column inserts and removes that don't affect the range
+CreateFormulaExecutor†a1;b4:d6•InsertColumnsExecutor†5;2•NumDependenciesValidator†1
+CreateFormulaExecutor†a1;b4:d6•RemoveColumnsExecutor†5;2•NumDependenciesValidator†1
+' Test column inserts for single cell reference
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†2;1•FirstReferenceEqualValidator†D1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†3;1•FirstReferenceEqualValidator†D1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†7;1•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†6;1•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†4;1•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†4;2•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†4;4•FirstReferenceEqualValidator†C1
+CreateFormulaExecutor†a1;c1•InsertColumnsExecutor†3;4•FirstReferenceEqualValidator†g1
+' Test row inserts with single cell reference
+CreateFormulaExecutor†a1;a3•InsertRowsExecutor†3;1•FirstReferenceEqualValidator†A4
+CreateFormulaExecutor†a1;a3•InsertRowsExecutor†4;1•FirstReferenceEqualValidator†A3
+CreateFormulaExecutor†a1;a3•InsertRowsExecutor†2;1•FirstReferenceEqualValidator†A4
+CreateFormulaExecutor†a1;a3•InsertRowsExecutor†2;3•FirstReferenceEqualValidator†A6
+' Test row removes with single cell reference
+CreateFormulaExecutor†a1;a3•RemoveRowsExecutor†2;1•FirstReferenceEqualValidator†A2
+CreateFormulaExecutor†a1;a3•RemoveRowsExecutor†4;2•FirstReferenceEqualValidator†A3
+CreateFormulaExecutor†a1;a4•RemoveRowsExecutor†2;2•FirstReferenceEqualValidator†A2
+CreateFormulaExecutor†a1;a4•RemoveRowsExecutor†4;1•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;a4•RemoveRowsExecutor†3;3•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;a4•RemoveRowsExecutor†3;5•FirstReferenceInvalidValidator†
+' Test row inserts with cell range reference
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†2;1•FirstReferenceEqualValidator†A5:a8
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†2;2•FirstReferenceEqualValidator†A6:a9
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†4;1•FirstReferenceEqualValidator†A5:a8
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†4;1•FirstReferenceEqualValidator†A5:a8
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†4;2•FirstReferenceEqualValidator†A6:a9
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†5;2•FirstReferenceEqualValidator†A4:a9
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†5;3•FirstReferenceEqualValidator†A4:a10
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†7;1•FirstReferenceEqualValidator†A4:a8
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†7;2•FirstReferenceEqualValidator†A4:a9
+CreateFormulaExecutor†a1;a4:a7•InsertRowsExecutor†9;2•FirstReferenceEqualValidator†A4:a7
+CreateFormulaExecutor†a1;a4:a4•InsertRowsExecutor†2;2•FirstReferenceEqualValidator†A6:a6
+' Test row removes with cell range reference
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†2;1•FirstReferenceEqualValidator†A3:a6
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†2;2•FirstReferenceEqualValidator†A2:a5
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†4;1•FirstReferenceEqualValidator†A4:a6
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†4;2•FirstReferenceEqualValidator†A4:a5
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†4;3•FirstReferenceEqualValidator†A4:a4
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†5;2•FirstReferenceEqualValidator†A4:a5
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†6;1•FirstReferenceEqualValidator†A4:a6
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†6;2•FirstReferenceEqualValidator†A4:a5
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†6;3•FirstReferenceEqualValidator†A4:a5
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†8;2•FirstReferenceEqualValidator†A4:a7
+CreateFormulaExecutor†a1;a4:a4•RemoveRowsExecutor†2;2•FirstReferenceEqualValidator†A2:a2
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†4;4•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;a4:a7•RemoveRowsExecutor†3;7•FirstReferenceInvalidValidator†
+' Row inserts and removes that don't affect the range
+CreateFormulaExecutor†a1;b2:d4•InsertRowsExecutor†6;2•NumDependenciesValidator†1
+CreateFormulaExecutor†a1;b2:d4•RemoveRowsExecutor†6;2•NumDependenciesValidator†1
+' Test moves inside cell ranges that shrink the range
+'	Simple case;left
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:b8;0;1•FirstReferenceEqualValidator†c3:d8
+'	Simple case;right
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†d3:d8;0;-1•FirstReferenceEqualValidator†b3:c8
+'	Simple case; bottom
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b8:d8;-1;0•FirstReferenceEqualValidator†b3:d7
+'	Simple case; top
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d3;1;0•FirstReferenceEqualValidator†b4:d8
+'	Same thing but with more complex ranges
+'		left
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:c8;0;1•FirstReferenceEqualValidator†c3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b2:b9;0;1•FirstReferenceEqualValidator†c3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b2:b9;0;2•FirstReferenceEqualValidator†c3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:c9;0;1•FirstReferenceEqualValidator†c3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:b9;0;1•FirstReferenceEqualValidator†c3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:b9;0;2•FirstReferenceEqualValidator†c3:d8
+'		right
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c3:d8;0;-1•FirstReferenceEqualValidator†b3:c8
+CreateFormulaExecutor†a1;b3:e8•MoveRangeExecutor†d2:e9;0;-1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:e8•MoveRangeExecutor†c2:e9;0;-1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:e8•MoveRangeExecutor†d2:f10;0;-1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:e8•MoveRangeExecutor†e2:e9;0;-1•FirstReferenceEqualValidator†b3:d8
+'		bottom
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b7:d8;-1;0•FirstReferenceEqualValidator†b3:d7
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b7:d8;-2;0•FirstReferenceEqualValidator†b3:d6
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b7:d8;-3;0•FirstReferenceEqualValidator†b3:d6
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b6:d8;-3;0•FirstReferenceEqualValidator†b3:d5
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b5:d8;-2;0•FirstReferenceEqualValidator†b3:d6
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b8:d13;-5;0•FirstReferenceEqualValidator†b3:d7
+' Top
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d4;1;0•FirstReferenceEqualValidator†b4:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d4;2;0•FirstReferenceEqualValidator†b5:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d4;3;0•FirstReferenceEqualValidator†b5:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d5;1;0•FirstReferenceEqualValidator†b4:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d5;2;0•FirstReferenceEqualValidator†b5:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:d5;3;0•FirstReferenceEqualValidator†b6:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:d3;1;0•FirstReferenceEqualValidator†b4:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:e4;2;0•FirstReferenceEqualValidator†b5:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:e5;1;0•FirstReferenceEqualValidator†b4:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:e5;2;0•FirstReferenceEqualValidator†b5:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†a2:e5;3;0•FirstReferenceEqualValidator†b6:d8
+'	Internal moves that shouldn't change anything
+'		Right
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†d4:d7;0;-1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c4:d7;0;-1•FirstReferenceEqualValidator†b3:d8
+'		Top
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:c3;1;0•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b3:c3;2;0•FirstReferenceEqualValidator†b3:d8
+'		Bottom
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b7:d7;-1;0•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b7:d7;1;0•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b8:c8;-1;0•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c7:d8;-1;0•FirstReferenceEqualValidator†b3:d8
+'		Left
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b4:b7;0;1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†b4:c7;0;1•FirstReferenceEqualValidator†b3:d8
+'		Middle
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c4:c7;0;1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c4:c7;0;-1•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c4:c7;1;0•FirstReferenceEqualValidator†b3:d8
+CreateFormulaExecutor†a1;b3:d8•MoveRangeExecutor†c4:c7;-1;0•FirstReferenceEqualValidator†b3:d8
+' Column ranges
+'	Insert columns
+CreateFormulaExecutor†a1;d:f•InsertColumnsExecutor†3;1•FirstReferenceEqualValidator†e:g
+CreateFormulaExecutor†a1;d:f•InsertColumnsExecutor†4;1•FirstReferenceEqualValidator†e:g
+CreateFormulaExecutor†a1;d:f•InsertColumnsExecutor†5;1•FirstReferenceEqualValidator†d:g
+CreateFormulaExecutor†a1;d:f•InsertColumnsExecutor†6;1•FirstReferenceEqualValidator†d:g
+CreateFormulaExecutor†a1;d:f•InsertColumnsExecutor†7;1•FirstReferenceEqualValidator†d:f
+'	Remove columns
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†3;1•FirstReferenceEqualValidator†c:e
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†4;1•FirstReferenceEqualValidator†d:e
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†5;1•FirstReferenceEqualValidator†d:e
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†6;1•FirstReferenceEqualValidator†d:e
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†7;1•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†5;2•FirstReferenceEqualValidator†d:d
+CreateFormulaExecutor†a1;d:f•RemoveColumnsExecutor†4;3•FirstReferenceInvalidValidator†
+'	Insert/remove rows (should have no effect)
+CreateFormulaExecutor†a1;d:f•InsertRowsExecutor†5;2•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•RemoveRowsExecutor†5;2•FirstReferenceEqualValidator†d:f
+'	Range moves
+'		Moves that shouldn't do anything
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†f4:f8;0;1•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†f4:f8;2;0•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†f4:f8;2;5•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†c6:g9;2;5•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†6:9;2;0•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†6:9;-2;0•FirstReferenceEqualValidator†d:f
+'		Moves that should change the range
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†f:f;0;1•FirstReferenceEqualValidator†d:g
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†g:h;0;-1•FirstReferenceEqualValidator†d:e
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†d:d;0;1•FirstReferenceEqualValidator†e:f
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†d:f;0;1•FirstReferenceEqualValidator†e:g
+CreateFormulaExecutor†a1;d:f•MoveRangeExecutor†c:g;0;1•FirstReferenceEqualValidator†e:g
+' Row ranges
+'	Insert rows
+CreateFormulaExecutor†a1;4:6•InsertRowsExecutor†3;1•FirstReferenceEqualValidator†5:7
+CreateFormulaExecutor†a1;4:6•InsertRowsExecutor†4;1•FirstReferenceEqualValidator†5:7
+CreateFormulaExecutor†a1;4:6•InsertRowsExecutor†5;1•FirstReferenceEqualValidator†4:7
+CreateFormulaExecutor†a1;4:6•InsertRowsExecutor†6;1•FirstReferenceEqualValidator†4:7
+CreateFormulaExecutor†a1;4:6•InsertRowsExecutor†7;1•FirstReferenceEqualValidator†4:6
+'	Remove rows
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†3;1•FirstReferenceEqualValidator†3:5
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†4;1•FirstReferenceEqualValidator†4:5
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†5;1•FirstReferenceEqualValidator†4:5
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†6;1•FirstReferenceEqualValidator†4:5
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†7;1•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†5;2•FirstReferenceEqualValidator†4:4
+CreateFormulaExecutor†a1;4:6•RemoveRowsExecutor†4;3•FirstReferenceInvalidValidator†
+'	Insert/remove columns (should have no effect)
+CreateFormulaExecutor†a1;4:6•InsertColumnsExecutor†5;2•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•RemoveColumnsExecutor†5;2•FirstReferenceEqualValidator†4:6
+'	Range moves
+'		Moves that shouldn't do anything
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†f4:f8;0;1•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†f4:f8;2;0•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†f4:f8;2;5•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†c6:g9;2;5•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†e:g;0;3•FirstReferenceEqualValidator†4:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†d:f;0;-2•FirstReferenceEqualValidator†4:6
+'		Moves that should change the range
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†6:6;1;0•FirstReferenceEqualValidator†4:7
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†7:8;-1;0•FirstReferenceEqualValidator†4:5
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†4:4;1;0•FirstReferenceEqualValidator†5:6
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†4:6;1;0•FirstReferenceEqualValidator†5:7
+CreateFormulaExecutor†a1;4:6•MoveRangeExecutor†3:7;1;0•FirstReferenceEqualValidator†5:7
+' Test cross-sheet moves
+'	Single cell
+'		Move from one sheet to another
+CreateFormulaExecutor†a1;b2•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b2;1;1•FirstReferenceEqualValidator†Sheet2!c3
+CreateFormulaExecutor†a1;b2•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b2;0;0•FirstReferenceEqualValidator†Sheet2!b2
+'		Move from another sheet overwritting the cell
+CreateFormulaExecutor†a1;Sheet2!c3•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b2;1;1•FirstReferenceInvalidValidator†
+'	Cell range
+'		Move of whole range from one sheet to another
+CreateFormulaExecutor†a1;b2:c3•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b2:c3;0;0•FirstReferenceEqualValidator†Sheet2!b2:c3
+CreateFormulaExecutor†a1;b2:c3•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b2:c3;1;1•FirstReferenceEqualValidator†Sheet2!c3:d4
+'		Partial move of range from one sheet to another
+'			bottom
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c6:d6;0;0•FirstReferenceEqualValidator†Sheet1!c4:d5
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c6:d6;4;4•FirstReferenceEqualValidator†Sheet1!c4:d5
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c6:d7;4;4•FirstReferenceEqualValidator†Sheet1!c4:d5
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b5:e7;4;4•FirstReferenceEqualValidator†Sheet1!c4:d4
+'			left
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c4:c6;0;0•FirstReferenceEqualValidator†Sheet1!d4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c4:c6;4;4•FirstReferenceEqualValidator†Sheet1!d4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b4:c6;4;4•FirstReferenceEqualValidator†Sheet1!d4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!a3:c7;1;0•FirstReferenceEqualValidator†Sheet1!d4:d6
+'			top
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c4:d4;0;0•FirstReferenceEqualValidator†Sheet1!c5:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c4:d4;4;4•FirstReferenceEqualValidator†Sheet1!c5:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c3:d5;-1;-1•FirstReferenceEqualValidator†Sheet1!c6:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!b3:e5;0;0•FirstReferenceEqualValidator†Sheet1!c6:d6
+'			right
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d4:d6;0;0•FirstReferenceEqualValidator†Sheet1!c4:c6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d4:d6;4;4•FirstReferenceEqualValidator†Sheet1!c4:c6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d4:e6;-1;-1•FirstReferenceEqualValidator†Sheet1!c4:c6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d3:e8;-1;-2•FirstReferenceEqualValidator†Sheet1!c4:c6
+'		Moves that should not change the range
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d6;0;0•FirstReferenceEqualValidator†Sheet1!c4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!c4:c5;1;-1•FirstReferenceEqualValidator†Sheet1!c4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d4;1;-1•FirstReferenceEqualValidator†Sheet1!c4:d6
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet2•MoveRangeExecutor†Sheet1!d4:d5;1;-1•FirstReferenceEqualValidator†Sheet1!c4:d6
+'		Move from another sheet onto our range
+'			onto whole range
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!e4:f6;0;-2•FirstReferenceInvalidValidator†
+CreateFormulaExecutor†a1;c4:d6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!e5:g8;-1;-2•FirstReferenceInvalidValidator†
+'			onto edges so that the range should shrink
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d10;-4;-1•FirstReferenceEqualValidator†Sheet1!d4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d12;-5;-1•FirstReferenceEqualValidator†Sheet1!d4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d10;-4;2•FirstReferenceEqualValidator†Sheet1!c4:d6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d12;-5;2•FirstReferenceEqualValidator†Sheet1!c4:d6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e9;-2;0•FirstReferenceEqualValidator†Sheet1!c4:e5
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b8:f9;-2;0•FirstReferenceEqualValidator†Sheet1!c4:e5
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c1:e2;2;0•FirstReferenceEqualValidator†Sheet1!c5:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b1:f2;2;0•FirstReferenceEqualValidator†Sheet1!c5:e6
+'				2 deep
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e10;-4;-1•FirstReferenceEqualValidator†Sheet1!e4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e12;-5;-1•FirstReferenceEqualValidator†Sheet1!e4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e10;-4;1•FirstReferenceEqualValidator†Sheet1!c4:c6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e12;-5;1•FirstReferenceEqualValidator†Sheet1!c4:c6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e10;-3;0•FirstReferenceEqualValidator†Sheet1!c4:e4
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b8:f10;-3;0•FirstReferenceEqualValidator†Sheet1!c4:e4
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c1:e3;2;0•FirstReferenceEqualValidator†Sheet1!c6:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b1:f3;2;0•FirstReferenceEqualValidator†Sheet1!c6:e6
+'		onto edges that should not change the range
+'			1 deep
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:c10;-4;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!e8:e10;-4;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e8;-2;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c2:e2;2;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+'			2 deep
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d10;-4;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d12;-5;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d10;-4;1•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:d12;-5;1•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c8:e9;-3;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b8:f9;-3;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!c1:e2;3;0•FirstReferenceEqualValidator†Sheet1!c4:e6
+CreateFormulaExecutor†a1;c4:e6•SetActiveSheetExecutor†Sheet1•MoveRangeExecutor†Sheet2!b1:f2;3;0•FirstReferenceEqualValidator†Sheet1!c4:e6

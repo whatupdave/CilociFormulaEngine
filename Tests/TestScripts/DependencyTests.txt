@@ -1,0 +1,49 @@
+' Test our dependency management
+CreateFormulaExecutor†b1;a1+1;c1;b1+1•NullExecutor†•NumDependenciesValidator†2
+' Remove formula at B1
+CreateFormulaExecutor†b1;a1+1;c1;b1+1•DestroyFormulaExecutor†0•NumDependenciesValidator†1
+' Remove both formulas
+CreateFormulaExecutor†b1;a1+1;c1;b1+1•DestroyFormulaExecutor†0;1•NumDependenciesValidator†0
+' Formula with multiple cell references
+CreateFormulaExecutor†b1;a1+A3+1;c1;b1+1•NullExecutor†•NumDependenciesValidator†3
+CreateFormulaExecutor†b1;a1+A3+1;c1;b1+1•DestroyFormulaExecutor†0•NumDependenciesValidator†1
+' More complex single cell reference test
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•NullExecutor†•NumDependenciesValidator†5
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†1•NumDependenciesValidator†3
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†3•NumDependenciesValidator†4
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0•NumDependenciesValidator†4
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0;1;2•NumDependenciesValidator†1
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0;1;2;3•NumDependenciesValidator†0
+' Test reference count
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•NullExecutor†•NumReferencesValidator†5
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†1•NumReferencesValidator†4
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†3•NumReferencesValidator†4
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0•NumReferencesValidator†5
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0;1;2•NumReferencesValidator†2
+CreateFormulaExecutor†a3;a1+1;b2;a1+a3+1;c3;a1+2;d4;c3+13•DestroyFormulaExecutor†0;1;2;3•NumReferencesValidator†0
+' Test adding formulas and range optimization
+CreateFormulaExecutor†b2;c3:d4;c4;b6+1•NullExecutor†•NumDependenciesValidator†3
+CreateFormulaExecutor†b2;c3:d4;c6;b6+1•NullExecutor†•NumDependenciesValidator†2
+' Test dynamic range dependency optimization
+CreateFormulaExecutor†b2;c3:d4;c6;b6+1•MoveRangeExecutor†c6;-2;0•NumDependenciesValidator†3
+CreateFormulaExecutor†b2;c3:d4;c4;b6+1•MoveRangeExecutor†c4;2;0•NumDependenciesValidator†2
+' Cell range moving on top of cell reference
+CreateFormulaExecutor†b2;c3:d4;c4;b6+1•MoveRangeExecutor†c4:d4;3;0•NumDependenciesValidator†3
+' Test that our range link works regardless of order of added formulas
+CreateFormulaExecutor†a1;a4:b5;a5;a7+1•NumDirectPrecedentsValidator†a1;2
+CreateFormulaExecutor†a5;a7+1;a1;a4:b5•NumDirectPrecedentsValidator†a1;2
+' Same but for removing formulas
+CreateFormulaExecutor†a1;a4:b5;a5;a7+1•DestroyFormulaExecutor†1•NumDirectPrecedentsValidator†a1;1
+CreateFormulaExecutor†a5;a7+1;a1;a4:b5•DestroyFormulaExecutor†1•NumDirectPrecedentsValidator†a1;0
+' Test that we don't apply range link to two overlapping ranges
+CreateFormulaExecutor†a1;sum(b3:c4);b2;sum(c2:e5)•NumDependenciesValidator†2
+' Test that we only apply range link to non-sources (B5 should not be range linked)
+CreateFormulaExecutor†a5;b5+1;a1;a4:b5•NumDirectPrecedentsValidator†a1;2
+' Test that remove rows/columns only affects references on proper sheet
+CreateFormulaExecutor†a1;sheet1!b2+sheet2!b2•RemoveColumnsExecutor†2;1•ReferenceValidValidator†Sheet1!b2;false;Sheet2!b2;true
+CreateFormulaExecutor†a1;sheet1!b2+sheet2!b2•RemoveRowsExecutor†2;1•ReferenceValidValidator†Sheet1!b2;false;Sheet2!b2;true
+' Same for insert rows/columns
+CreateFormulaExecutor†a1;sheet2!b2•InsertColumnsExecutor†2;1•FirstReferenceEqualValidator†Sheet2!b2
+CreateFormulaExecutor†a1;sheet2!b2•InsertRowsExecutor†2;1•FirstReferenceEqualValidator†Sheet2!b2
+' Same for range move
+CreateFormulaExecutor†a1;sheet2!b2•MoveRangeExecutor†b2;1;0•FirstReferenceEqualValidator†Sheet2!b2

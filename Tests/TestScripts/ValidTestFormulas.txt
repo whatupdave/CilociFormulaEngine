@@ -1,0 +1,1495 @@
+' Test that the result from evaluating a formula matches the result from excel
+' Simple references
+a1
+a1:b2
+b2:c4
+' Test our number parsing
+1+a5
+123
+0.123
+123.456
+0.0
+1.1
+1.45668
+10000000
+0.9034757
+-1.45
+-0.45
+1e+100
+145e+12
+145e-12
+145E+140
+145E-140
+134E-9
+0.45E-1
+0.45E+1
+0.45E-12
+0.45E+12
+0.45e-300
+0.45e+300
+' References to cells with numbers
+1 + A1
+b2 + b4 * 45
+b2 & d1
+' References to cells with strings that are convertible to numbers
+2 * A3 + C3
+(A3 & C3) + 2
+B3%
+-B3
+' References to cells with random strings
+1 + B4
+B4 & D4
+C4%
+-C4
+(1 + A1) / D4
+' Basic arithmetic with immediate operands
+- 5 %
+1/0
+1 + "abc"
+(1/0) > (1/0)
+(1/0) + (1 + "abc")
+(1 + "abc") + (1/0)
+1+2
+1+-2
+-1+ +2
+-1 + -2
+1+2+3
+1+2+3 + 4
+12+332+34
+1.34+2
+12+ 2.5
+1.34+ 2.42 + 45.87
+12+ true
+12+ False
+False + 12
+True + 12
+True + 12.25
+12.25 + True + False
+1-2
+1-2-3
+1-2-3 - 4
+12-332-34
+1.34-2
+12- 2.5
+1.34- 2.42 - 45.87
+1 * 2
+1 *2 *3
+1 * 2* 3 * 4
+22 * 12* 3 * 4
+1.5 * 2
+2 * 2.5
+1.5 * 22.23
+1 / 2
+1 /2 /3
+1 / 2/ 3 / 4
+22 / 12/ 3 / 4
+1.5 / 2
+2 / 1.5
+2 / -1.5
+1.5 / 22.23
+1 ^ 2
+2 ^ 2
+4^-1
+2 ^ 2.5
+9.56 ^ 2
+2.45 ^ 4.5
+2%
+100%
+100 % %
+4455%%
+3.45%%
+1.5 + 14 / 2
+1.5 * 14 / 2
+1.5 * 14 / -2
+7 / 4 + 2
+733.4 / 4 + 2.45
+733.4 / 4 ^ 5.2 + 2.45
+7 / 4 + 2 - 4 * 55
+74.5 / 4 + 2.34 - 6 * 55.1
+14 + 2^ 2
+14 + 2^ 2 + 120%
+1.5 + 14 / 2
+1.5 + -14 / 2
+7 / 4 + 2
+7 / 4 + 2 - 4 * 55
+74.5 / 4 + 2.34 - 6 * 55.1
+14 * (34 - (14.34 + 12))
+14 * (34 - (14.34 + 12)) + 90
+14 * (34 - (14.34 + 12)) + -(9 / 4)
+"a" & "b"
+"a" & "bd"
+"a" & 1
+"a" & 13.45
+1.5 + "1" & "2"
+"" & "a"
+"a" & True
+"a" & False
+' Test power operator
+1^0
+-1^0
+-1.45^0
+13.45^6
+12^-2.5
+1300000^1000
+1300000^-1000
+0.24^2
+1^1
+2^4^8
+' Addition and subtraction of a number from a date
+today() + 10
+5.32 + today()
+today() - 10
+today() - 4.32
+' Test cases that should produce a #NUM! error
+9E+307 + 9.0034E+307
+-9E+307 - 9E+307
+1E+300 * 1.34E+100
+9E+307 / 9E-307
+-0.45^-20.3
+-2^-0.25
+9E+307 ^ 3
+' Arithmetic with cells with errors
+1 + A5
+A5 + A1
+"abc" & C5
+2 * A5
+2 - A5
+A5 / C5
+A5 ^ 2
+A1 * (A5 + 13)
+A5%
+-A5
+"a"%
+-"a"
+' Logical tests
+1=2
+1=1
+100=100
+1.2=2
+2=1.2
+11.24=11.24
+TRUE=false
+TRUE=true
+"a" = "A"
+"a" = "a"
+"aBC" = "Abc"
+"eugene" = "string"
+1 = 1
+1 = "abc"
+1 = True
+1 = False
+14.35 = False
+"abc" = true
+1<>2
+1<>1
+100<>100
+1.2<>2
+2<>1.2
+11.24<>11.24
+TRUE<>false
+TRUE<>true
+"a" <> "A"
+"a" <> "a"
+"aBC" <> "Abc"
+"eugene" <> "string"
+1 <> 1
+1 <> "abc"
+1 <> True
+1 <> False
+14.35 <> False
+"abc" <> true
+1<2
+1<1
+100<100
+1.2 < 2
+2 < 1.2
+11.24<11.24
+TRUE<false
+TRUE<true
+false<true
+false<false
+"a" < "A"
+"a" < "a"
+"aBC" < "Abc"
+"eugene" < "string"
+"a" < "B"
+1 < 1
+1 < 100
+1 < "abc"
+1 < True
+1 < False
+14.35 < False
+"abc" < true
+"abc" < False
+"abc" < 10000
+True < 1000
+False < 1000
+1>2
+1>1
+100>100
+1.2 > 2
+2 > 1.2
+11.24 > 11.24
+TRUE > false
+TRUE > true
+false > true
+false > false
+"a" > "A"
+"a" > "a"
+"aBC" > "Abc"
+"eugene" > "string"
+"a" > "B"
+1 > 1
+1 > 100
+1 > "abc"
+1 > True
+1 > False
+14.35 > False
+"abc" > true
+"abc" > False
+"abc" > 10000
+True > 1000
+False > 1000
+1<=2
+1<=1
+100<=100
+1.2 <= 2
+2 <= 1.2
+11.24 <= 11.24
+TRUE <= false
+TRUE <= true
+false <= true
+false <= false
+"a" <= "A"
+"a" <= "a"
+"aBC" <= "Abc"
+"eugene" <= "string"
+"a" <= "B"
+1 <= 1
+1 <= 100
+1 <= "abc"
+1 <= True
+1 <= False
+14.35 <= False
+"abc" <= true
+"abc" <= False
+"abc" <= 10000
+True <= 1000
+False <= 1000
+1>=2
+1>=1
+100>=100
+1.2 >= 2
+2 >= 1.2
+11.24 >= 11.24
+TRUE >= false
+TRUE >= true
+false >= true
+false >= false
+"a" >= "A"
+"a" >= "a"
+"aBC" >= "Abc"
+"eugene" >= "string"
+"a" >= "B"
+1 >= 1
+1 >= 100
+1 >= "abc"
+1 >= True
+1 >= False
+14.35 >= False
+"abc" >= true
+"abc" >= False
+"abc" >= 10000
+True >= 1000
+False >= 1000
+11 < 2 < true
+True = True = True
+"abc" < 11 < 24
+' Compare with cells
+"abc" < a1
+a1 > "abc"
+14 > a2
+"abc" < a2
+"123" = A3
+a1 = a3
+a1 > a4
+a1 >a5
+' Compare against empty values
+b6 = 0
+b6 = ""
+b6 = False
+b6 > 0
+b6 > 14
+b6 < 120
+b6 = c6
+b6 < c6
+b6 = "abc"
+c6 = ""
+c6 = False
+c6 >= False
+c6 = True
+c6 < true
+c6 = A1
+A1 > c6
+c6 <= a1
+' Compares with error values
+1 = C5
+"abc" > C5
+True <> A5
+A5 = C5
+A5 = A5
+145 >= (1/0)
+(1/0) <= "abc"
+(1/0) <= 13.45
+' Operations with non-cell ranges
+1 + A1:b2
+100 * b2:b3
+a1 > a1:b2
+1 = a1:b1
+' Error constants
+#DIV/0!
+#N/A
+#NAME?
+#NULL!
+#REF!
+#VALUE!
+#NUM!
+1 + #NUM!
+2 * (1 - #DIV/0!)
+if(1 > 23, "abc", #N/A)
+' Absolute specifiers
+$a$1 + 1
+$a1 + 1
+a$1 + 10
+sum($a$1:b2)
+sum(a$1:b2)
+sum($a1:b2)
+sum(a1:$b$2)
+sum(a1:$b2)
+sum(a1:b$2)
+sum($a:$b)
+sum($a:b)
+sum(a:$b)
+sum($1:$2)
+sum($1:2)
+sum(1:$2)
+sum(1,,2)
+' Function call tests
+Sum(1,2,3)
+SUM(0, "abc", 13)
+SUm("1", True, "13.45")
+Sum(1/0, 12, 34.34)
+sum(A1, A3, B2)
+sum(a1:d2)
+sum(a1:d2, b2)
+Sum(A1:D3)
+Sum(A1:D3, 100, c3)
+Sum(A1:D4)
+Sum(A1:D4, c4)
+Sum(A1:D3, b5)
+SUM(A1:D3, B5, "abc")
+sum(a1:b2, c1:d2)
+sum(a1:d6)
+if("abc", "eugene")
+if(10, "eugene")
+if(0 > 1, 10, 20)
+if(0 > 1, 10)
+if(True, a1) 
+if(True,b5)
+if(false, a1,c5)
+if(a1 > b1, "eugene", "dog")
+if(b1>c1, a1 +1,d4)
+if(#DIV/0!, "t","f")
+if(1 > 0, #num!, false)
+ceiling(14,0)
+ceiling(-14,0)
+ceiling(0,-1)
+ceiling(0,100)
+ceiling(13,-0.4)
+ceiling(-4.45, 1)
+ceiling(c5,1)
+ceiling(c5,d5)
+ceiling(2.5,1)
+ceiling(-2.5,-2)
+ceiling(1.5,0.1)
+ceiling(0.234,0.01)
+ceiling(a1,a2)
+ceiling("abc", 2)
+ceiling(a4, 0.01)
+' More complex function calls
+SUM(IF(FALSE, A1,A4))
+SUM(IF(a1>b1, a1:c2,A4))
+SUM(IF(a1<b1, a1:c2,A4:d4))
+SIN(SUM(A1:B2))
+if(sin(a1) > 1, "eugene", 120)
+if(sin(a1) < 1, "eugene", 120)
+' Test variable argument limit
+=SUM(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
+' Test formulas with leading =
+=1=1
+=1 + 2 * 3
+=1+sin(14)
+="abc"
+=True
+=14
+=(1+3^4)
+="abc" & "def"
+' Test backwards cell ranges
+sum(B5:d4)
+sum(d1:a4)
+sum(d5:a1)
+' Test functions with mixed numeric values
+sum(a1:e2)
+max(a1:e2)
+average(a1:e2)
+averageA(a1:e2)
+count(a1:e2)
+counta(a1:e2)
+sin(e2)
+' Test function calls with row/col ranges
+sum(1:2)
+sum(1:3)
+sum(2:4)
+sum(a:b)
+sum(b:c)
+' Information functions
+'	IsX functions
+IsLogical(1)
+IsLogical(145.34)
+IsLogical(true)
+IsLogical(false)
+IsLogical("abc")
+IsLogical(#num!)
+IsLogical(1/0)
+IsLogical(a1)
+IsLogical(a2)
+IsLogical(a3)
+IsLogical(a4)
+IsLogical(a5)
+IsLogical(a6)
+IsLogical(a7)
+IsLogical(a1:b2)
+IsNumber(1)
+IsNumber(145.34)
+IsNumber(true)
+IsNumber(false)
+IsNumber("abc")
+IsNumber(#num!)
+IsNumber(1/0)
+IsNumber(a1)
+IsNumber(a2)
+IsNumber(a3)
+IsNumber(a4)
+IsNumber(a5)
+IsNumber(a6)
+IsNumber(a7)
+IsNumber(a1:b2)
+IsText(1)
+IsText(145.34)
+IsText(true)
+IsText(false)
+IsText("abc")
+IsText(#num!)
+IsText(1/0)
+IsText(a1)
+IsText(a2)
+IsText(a3)
+IsText(a4)
+IsText(a5)
+IsText(a6)
+IsText(a7)
+IsText(a1:b2)
+IsBlank(1)
+IsBlank(145.34)
+IsBlank(true)
+IsBlank(false)
+IsBlank("abc")
+IsBlank(#num!)
+IsBlank(1/0)
+IsBlank(a1)
+IsBlank(a2)
+IsBlank(a3)
+IsBlank(a4)
+IsBlank(a5)
+IsBlank(a6)
+IsBlank(a7)
+IsBlank(a1:b2)
+IsError(1)
+IsError(145.34)
+IsError(true)
+IsError(false)
+IsError("abc")
+IsError(#num!)
+IsError(1/0)
+IsError(a1)
+IsError(a2)
+IsError(a3)
+IsError(a4)
+IsError(a5)
+IsError(a6)
+IsError(a7)
+IsError(a1:b2)
+IsRef(1)
+IsRef(145.34)
+IsRef(true)
+IsRef(false)
+IsRef("abc")
+IsRef(#num!)
+IsRef(1/0)
+IsRef(a1)
+IsRef(a2)
+IsRef(a3)
+IsRef(a4)
+IsRef(a5)
+IsRef(a6)
+IsRef(a7)
+IsRef(a1:b2)
+IsNonText(1)
+IsNonText(145.34)
+IsNonText(true)
+IsNonText(false)
+IsNonText("abc")
+IsNonText(#num!)
+IsNonText(1/0)
+IsNonText(a1)
+IsNonText(a2)
+IsNonText(a3)
+IsNonText(a4)
+IsNonText(a5)
+IsNonText(a6)
+IsNonText(a7)
+IsNonText(a1:b2)
+IsErr(1)
+IsErr(145.34)
+IsErr(true)
+IsErr(false)
+IsErr("abc")
+IsErr(#num!)
+IsErr(#n/a)
+IsErr(1/0)
+IsErr(a1)
+IsErr(a2)
+IsErr(a3)
+IsErr(a4)
+IsErr(a5)
+iserr(b5)
+IsErr(a6)
+IsErr(a7)
+IsErr(a1:b2)
+IsNa(1)
+IsNa(145.34)
+IsNa(true)
+IsNa(false)
+IsNa("abc")
+IsNa(#num!)
+IsNa(#n/a)
+IsNa(1/0)
+IsNa(a1)
+IsNa(a2)
+IsNa(a3)
+IsNa(a4)
+IsNa(a5)
+IsNa(b5)
+IsNa(a6)
+IsNa(a7)
+IsNa(a1:b2)
+Type(1)
+Type(145.34)
+Type(true)
+Type(false)
+Type("abc")
+Type(#num!)
+Type(1/0)
+Type(a1)
+Type(a2)
+Type(a3)
+Type(a4)
+Type(a5)
+Type(a6)
+Type(a7)
+Type(a1:b2)
+' Text functions
+left("abc", -2)
+LEFT("eugene")
+left("eugene", 4)
+left("eugene", 100)
+left(c1,2)
+LEFT(a4)
+left(b5)
+left(a1:b2)
+char(0)
+char("100")
+char(33)
+char(True)
+char("eugene")
+char(a1)
+char(a2)
+char(a3)
+char(a4)
+char(a5)
+char(a6)
+char(a7)
+char(a1:b2)
+char(80000)
+char("")
+clean("this is a 	tab")
+clean("")
+clean(140)
+clean(-1400.56)
+clean(false)
+Clean(a1)
+Clean(a2)
+Clean(a3)
+Clean(a4)
+Clean(a5)
+Clean(a6)
+Clean(a7)
+Clean(a1:b2)
+code("ABC")
+code(True)
+Code(140)
+code(54530.34)
+code("")
+Code(a1)
+Code(a2)
+Code(a3)
+Code(a4)
+Code(a5)
+Code(a6)
+Code(a7)
+Code(a1:b2)
+Dollar(123)
+dollar(123.45)
+dollar(-123)
+dollar(-123.45)
+dollar(123.456,1)
+dollar(-123.456,1)
+dollar(123.456,2)
+dollar(123456,-1)
+dollar(123456,-2)
+dollar(123456.789,-1)
+dollar(123.45,0)
+dollar(123,0)
+dollar(123,-3)
+dollar(123.45,-3)
+exact("", "")
+exact("abc", "abc")
+exact("abc", "Abc")
+exact("abc", "ABC")
+exact("ABC", "A BC")
+exact("ABC", "ABC")
+exact(1334, 1334)
+exact(true, false)
+exact("some String", "some String")
+exact("string", "")
+find("m", "Miriam")
+find("M", "Miriam")
+find("M","Letter M",2)
+find("abc", "this is abc")
+find("abc", "this is a string")
+find("abc", "this is abc string")
+' Find is case sensitive
+find("ABC", "this is abc string")
+find("", "this is a string")
+find("abc", "string",-3)
+find("abc", "string", 44)
+find("abc", "string", 6)
+find("a", "stringa",7)
+find("abc", "string", 7)
+find("abc","string",0)
+fixed(1234.567,1)
+fixed(1234.567,-1)
+fixed(-1234.567,-1,true)
+fixed(44.332)
+Len("")
+len("123")
+len("this is a string")
+len(b4)
+len(true)
+len(123.45)
+len(-12)
+len(b6)
+lower("")
+lower("ABC")
+lower("abc")
+lower("abc123")
+lower("ABC 123")
+lower("This Is A String")
+Upper("")
+Upper("ABC")
+Upper("abc")
+Upper("abc123")
+Upper("ABC 123")
+Upper("This Is A String")
+mid("abc",2,2)
+mid("abc",0,2)
+mid("abc",-2,0)
+mid("abc",2,-1)
+mid("abc",1,3)
+mid("string",3,16)
+mid("string",1,6)
+Proper("this is a TITLE")
+proper("2-cent's worth")
+proper("76BudGet")
+rept("abc",-1)
+rept("abc",0)
+rept("abc",3)
+rept("***important***",13)
+rept("very long string",10000)
+replace("abcdefghijk",6,5,"*")
+REPLACE(2009,3,2,"10")
+REPLACE(123456,1,3,"@")
+REPLACE(123456,0,3,"@")
+REPLACE(123456,-1,3,"@")
+REPLACE(123456,1,-3,"@")
+replace(123456,1,0,"@")
+replace(123456,100,1,"@")
+replace(123456,100,200,"@")
+substitute("abc", "a", "d")
+substitute("the excel formula", "excel", "stuff")
+substitute("bbb", "b", "!!")
+substitute("the excel formula", "excel", "")
+substitute("word word the word", "word", "drow")
+substitute("word word the word", "word", "drow", 1)
+substitute("word word the word", "word", "drow", 2)
+substitute("word word the word", "word", "drow", 3)
+substitute("aaa", "b", "c", -1)
+substitute("aaa", "b", "c", 0)
+substitute("aaa", "a", "c", 4)
+substitute("aaa", "a", "space", 3)
+substitute("aaa", "a", "space", 2)
+substitute("aaa", "a", "space", 1)
+substitute("aaa", "a", "space", 0)
+substitute("aaa", "letter", "space")
+substitute("aaa", "letter", "space",1)
+substitute("a b c", "b", "")
+substitute("a a a", "a", "")
+substitute("a a a", "", "def")
+substitute("a a a", "", "def", 2)
+substitute("a a a", "the long string", "def", 2)
+substitute("a a a", "A", "def")
+substitute("a A a", "A", "def")
+right("Sale Price",5)
+right("string",-5)
+right("string",0)
+right("string",245)
+right("Stock Number")
+TEXT(2800, "$0.00")
+text(12345.67, "#,##0.000")
+text(0.04, "0%")
+' text with a date
+TEXT(TODAY(), "dd MMM yyyy")
+trim("   Alpha    Beta   Gamma   ")
+trim("this is a string")
+trim("string")
+concatenate(1,2,3)
+concatenate("a",2,true,3.45,a1,c2,b3,d4,e6,e7)
+concatenate("a",2,true,3.45,a1,c2,b5,d4,e6,e7)
+concatenate("a",2,true, #num!)
+concatenate("a", 13,a1:b2)
+Search("m", "Miriam")
+Search("M", "Miriam")
+Search("M","Letter M",2)
+Search("abc", "this is abc")
+Search("abc", "this is a string")
+Search("abc", "this is abc string")
+' Search is case sensitive
+Search("ABC", "this is abc string")
+Search("", "this is a string")
+Search("abc", "string",-3)
+Search("abc", "string", 44)
+Search("abc", "string", 6)
+Search("a", "stringa",7)
+Search("abc", "string", 7)
+Search("abc","string",0)
+' search with wildcards
+search("a?b", "this acb string")
+search("a?b", "this ab string")
+search("a?", "string")
+search("a*", "string")
+search("*", "string")
+search("a*f", "abcdef")
+search("a*f", "string abcdef")
+search("a~?", "string")
+search("a~?", "strina?g")
+search("~?", "question?")
+search("~*", "this * word")
+search("a?b", "acb space acb",5)
+' Try search with special regex characters
+search("a(b", "a(b")
+search("a(|", "a(|")
+search("a(|.", "a(|z")
+search("[\^$.|+()", "[\^$.|+()")
+search("[\^$.|+()*", "[\^$.|+()somestring")
+search("?[\^$.|+()*", "Y[\^$.|+()")
+search("[\^$.|+()*", "Y[\^$.|+()")
+' Math functions
+Round(0,0)
+round(134.564,2)
+round(134.564,1)
+round(134.564,3)
+round(134.564,0)
+round(123456.45,-2)
+round(123456.45,-4)
+round(124,-1)
+round(126,-2)
+round(128,0)
+round(-345.456,2)
+round(2.15,1)
+round(2.149,1)
+round(-1.475,2)
+round(21.5,-1)
+Sin(3.14)
+Sin("0.56")
+Sin(true)
+Sin("abc")
+sin(1/0)
+sin(a2)
+sin(b5)
+cos(0.5)
+cos(-2)
+cos(1234.56)
+tan(0.5)
+tan(-2)
+tan(1234.56)
+sinh(0.5)
+sinh(4)
+cosh(0.5)
+cosh(4)
+tanh(0.5)
+tanh(4)
+abs(134)
+abs(0)
+abs(-100.45)
+asin(100)
+asin(-1.2)
+asin(0.5)
+acos(100)
+acos(-1.2)
+acos(0.5)
+atan(-100)
+atan(0)
+atan(3.4)
+PI()
+Degrees(pi())
+degrees(0.5)
+radians(270)
+radians(45)
+exp(1)
+exp(2)
+exp(3.45)
+exp(-2)
+even(1.5)
+even(3)
+even(2)
+even(-1)
+even(-1.5)
+fact(-0.01)
+fact(-1)
+fact(0)
+fact(5)
+fact(1)
+fact(1.9)
+fact(171)
+fact(20000)
+floor(2.5,1)
+floor(-2.5,-2)
+floor(-2.5,2)
+floor(1.5,0.1)
+floor(0.234,0.01)
+int(8.9)
+int(-8.9)
+int(0)
+int(-1)
+int(1)
+int(2.3)
+int(-2.3)
+ln(86)
+ln(2.7182818)
+ln(exp(3))
+ln(0)
+ln(-1)
+ln(-2.45)
+log10(86)
+log10(10)
+log10(1e+5)
+log10(10^5)
+log10(0)
+log10(-0.01)
+log(10)
+log(8,2)
+log(86,2.7182818)
+log(14)
+log(0)
+log(-1.5)
+log(16,1)
+log(16,0)
+log(16,-2.4)
+mod(3,2)
+mod(-3,2)
+mod(3,-2)
+mod(-3,-2)
+mod(14,0)
+mod(140,2.5)
+odd(1.5)
+odd(3)
+odd(2)
+odd(-1)
+odd(-2)
+odd(0.01)
+odd(-0.01)
+odd(1.2)
+odd(-1.2)
+power(5,2)
+power(98.6,3.2)
+power(4,5/4)
+power(-1,0.5)
+product(1,2,3)
+product("1",2,True)
+product("1",2,false, #num!)
+product(1,a1,b1,c1)
+product(1,a1,b5)
+product(a6:e7)
+product(a1:e4)
+product(a1:e7)
+sign(10)
+sign(4-4)
+sign(-0.00001)
+sqrt(16)
+sqrt(-16)
+sqrt(-0.45)
+sqrt(0)
+sqrt(1)
+sqrt(44.5)
+trunc(8.9)
+trunc(-8.9)
+trunc(pi())
+trunc(0)
+trunc(1)
+trunc(-2)
+TRUNC(4.556,2)
+TRUNC(144.556,3)
+trunc(144.556,-2)
+trunc(144.556,-3)
+trunc(144.556,-1)
+trunc(144.556,0)
+rounddown(3.2,0)
+rounddown(3.5,0)
+rounddown(3.9,0)
+rounddown(76.9,0)
+rounddown(3.14159,3)
+rounddown(-3.14159,1)
+ROUNDDOWN(31415.92654, -2)
+rounddown(-3.6,0)
+rounddown(-3.1,0)
+rounddown(-3.6,1)
+roundup(3.2,0)
+roundup(3.5,0)
+roundup(3.9,0)
+roundup(76.9,0)
+roundup(3.14159,3)
+roundup(-3.14159,1)
+ROUNDup(31415.92654, -2)
+roundup(-3.6,0)
+roundup(-3.1,0)
+roundup(-3.6,1)
+combin(8,2)
+combin(-1,3)
+combin(9,-2)
+combin(2,10)
+combin(1,1)
+combin(50,6)
+combin(30,0)
+combin(20.5,15.2)
+combin(190,2)
+combin(0,0)
+combin(0,1)
+sumsq(1,2,3)
+sumsq("1",2,True)
+sumsq("1",2,false, #num!)
+sumsq(1,a1,b1,c1)
+sumsq(1,a1,b5)
+sumsq(a6:e7)
+sumsq(a1:e4)
+sumsq(a1:e7)
+' Test sumif
+'	numbers
+sumif(a1:e1, 13)
+sumif(a1:e1, 1300)
+sumif(a1:e1, "string")
+sumif(a1:e1, true)
+sumif(a1:e1, "1000.23")
+sumif(a1:e1, "=-5")
+sumif(a1:e1, "<>100")
+sumif(a1:e1, "<500")
+sumif(a1:e1, ">500")
+sumif(a1:e1, ">=13")
+sumif(a1:e1, "<=1000.23")
+sumif(a1:e1, ">0")
+'	numbers with two ranges
+sumif(a1:e1, "=13", a2:e2)
+sumif(a1:e1, 123.34, a2:e2)
+sumif(a1:e1, ">500", a2:e2)
+sumif(a1:e1, "<1000", a2:e2)
+sumif(a1:e1, ">0", a2:e2)
+'	with sum range containing non numbers
+SUMIF(A1:E1,">13", A4:E4)
+SUMIF(A1:E1,">1", A6:E6)
+SUMIF(A1:E1,"<>0", A7:E7)
+'	with strings
+sumif(a4:e4, "S")
+sumif(a4:e4, "S", a1:e1)
+sumif(a4:e4, "eugene", a1:e1)
+sumif(a4:e4, "EuGenE", a1:e1)
+sumif(a4:e4, "<>a", a1:e1)
+SUMIF(A4:E4, ">a",A1:E1)
+SUMIF(A4:E4, "=()()^^^",A2:E2)
+'	with booleans
+sumif(a7:e7, true)
+sumif(a7:e7, true, a2:e2)
+sumif(a7:e7, false, a1:e1)
+sumif(a7:e7, "=true", a2:e2)
+sumif(a7:e7, "<>true", a2:e2)
+sumif(a7:e7, ">false", a1:e1)
+sumif(a7:e7, "<true", a1:e1)
+sumif(a7:e7, ">=false", a1:e1)
+'	with blanks
+SUMIF(A6:E6, "",A1:E1)
+'SUMIF(A6:E6, "=",A1:E1)
+SUMIF(A6:E6, "<>",A1:E1)
+SUMIF(A6:E6, ">",A1:E1)
+SUMIF(A6:E6, ">=",A1:E1)
+SUMIF(A6:E6, "<",A1:E1)
+SUMIF(A6:E6, "<=",A1:E1)
+'	with wildcards on strings
+SUMIF(A4:E4, "=*",A2:E2)
+SUMIF(A4:E4, "*",A2:E2)
+SUMIF(A4:E4, "=?",A2:E2)
+SUMIF(A4:E4, "?",A2:E2)
+SUMIF(A4:E4, "<>?",A2:E2)
+SUMIF(A4:E4, "<>*",A2:E2)
+SUMIF(A4:E4, "e*",A2:E2)
+SUMIF(A4:E4, "*number",A2:E2)
+'	with wildcards on non-strings
+SUMIF(A6:E6, "*",A2:E2)
+SUMIF(A7:E7, "*",A2:E2)
+SUMIF(A1:E1, "*",A2:E2)
+'	test how we adjust the sum range when it is not the same as the source range
+sumif(a1:e1, ">0", a2)
+SUMIF(A1:A7, ">0",B1:E1)
+SUMIF(A1:A7, ">0",c1)
+'	with dynamic criteria
+sumif(a1:e1, ">"&a2)
+sumif(a1:e1, ">" & sum(a2,b2))
+' Logical functions
+not(true)
+not(false)
+not(100)
+not(0)
+not("true")
+not("FALSE")
+not("abc")
+not(a1)
+not(a3)
+not(a4)
+not(b5)
+not(c6)
+not(a7)
+and(true, 1, "a")
+and(1,2,3)
+and(1,0,4)
+and(1, true, "true")
+and(true,false)
+and(1 >0, "a" <> "b")
+and(1 >0, true, #num!)
+and(a1)
+and(a1:e1)
+and(a3:e3)
+and(a4:e4)
+and(a5:e5)
+and(a6:e6)
+and(a7:e7)
+and(a1:e7)
+and(true, 1, "a")
+or(1,2,3)
+or(1,0,4)
+or(1, true, "true")
+or(true,false)
+or(1 >0, "a" <> "b")
+or(1 >0, true, #num!)
+or(a1)
+or(a1:e1)
+or(a3:e3)
+or(a4:e4)
+or(a5:e5)
+or(a6:e6)
+or(a7:e7)
+or(a1:e7)
+' Lookup functions
+Choose(0, 1,2,3)
+choose(3, 1,2)
+choose("a", 2,3)
+choose(1, "a", "b")
+choose(2, "a", true)
+CHOOSE(C3+1, "a", 14)
+choose(2, 13, #num!)
+choose(2, 0, a4)
+address(2,3)
+address(2,3,2)
+address(14,55)
+address(14,55,1)
+address(14,55,2)
+address(14,55,3)
+address(14,55,4)
+address(-2,0)
+address(1,0)
+address(1,-200)
+address(10,200,1,true, "SheetFour")
+address(10,200,2,true, "blah")
+address(10,200,3,true, "text")
+address(10,200,4,true, "SheetFour")
+address(10,200,4,true, "Sheet abc")
+ADDRESS(3,4,0)
+column(a1)
+column(c4:d5)
+column(d2)
+row(a1)
+row(c4:d5)
+row(d2)
+columns(b2:e3)
+columns(a1)
+columns(c3:c4)
+columns(c3:d4)
+columns(a:d)
+'columns(1:3) Skip since we won't give same result as Excel
+rows(a1)
+rows(b2:e3)
+rows(c3:c4)
+rows(c3:d4)
+rows(a1:a6)
+'rows(a:d) Skip since we won't give same result as Excel
+rows(1:5)
+Areas(b5)
+areas(a1:d2)
+INDEX(A2:C6,2,3)
+INDEX(A2:C6,2,1)
+INDEX(A2:C6,2,2)
+INDEX(A2:C6,1,3)
+INDEX(A3:C7,5,3)
+INDEX(A2:C6,6,3)
+INDEX(A2:C6,1,4)
+INDEX(A2:C6,2,-2)
+INDEX(A2:C6,-20,3)
+index(a2,1,1)
+index(a2,2,2)
+SUM(INDEX(A1:E1,1,0))
+SUM(INDEX(A1:E2,2,0))
+SUM(INDEX(A1:E2,0,1))
+SUM(INDEX(A1:E2,0,2))
+INDEX(A1:B7,3,2)
+SUM(INDEX(A1:B3,0,1))
+SUM(INDEX(A1:B3,1,0))
+INDEX(A1:E7,8,3)
+INDEX(A1:E7,0,6)
+INDEX(A1:E7,8,0)
+SUM(INDEX(A1:E2,0,0))
+offset(a1,1,1)
+offset(a1,1,0)
+offset(a1,0,1)
+offset(a1,1,-5)
+offset(a1,1,-2)
+offset(b1,0,-2)
+offset(b2,-3,0)
+offset(c4,-4,-4)
+offset(a1,1,1,1,1)
+offset(a1,1,1,0,1)
+offset(a1,2,3,1,0)
+offset(a1,2,3,-1,0)
+offset(a1,2,3,1,-3)
+SUM(OFFSET(A1,0,1,1,4))
+sum(offset(a1:b2,0,2))
+sum(offset(b5:c7,-4,-1))
+sum(offset(b5:c7,-4,-1,1,1))
+columns(offset(a1,1,1,2,2))
+rows(offset(a1,1,1,2,2))
+offset(b5:c7,-5,-2)
+'offset(a1,1,1,2,1000)
+'offset(b2,70000,1)
+'offset(b2,1,1000)
+COUNTA(OFFSET(A1,1,1,6,4))
+HLOOKUP(-5,A1:E2,3,TRUE)
+HLOOKUP(-5,A1:E2,4,TRUE)
+HLOOKUP(-5,A1:E2,1,TRUE)
+HLOOKUP(-5,A1:E2,2,TRUE)
+HLOOKUP(A5,A5:E7,3,TRUE)
+HLOOKUP("s",A4:E7,1,TRUE)
+HLOOKUP("S",A4:E7,1,TRUE)
+HLOOKUP("not*",A4:E7,2,false)
+HLOOKUP("e?gene",A4:E7,2,false)
+HLOOKUP(13,A1:E2,2,false)
+HLOOKUP(123.34,A1:E3,3,false)
+HLOOKUP(-5,A1:E3,3,false)
+' Test approximate matches
+HLOOKUP(300,c1:e3,2)
+HLOOKUP(56000,c1:e3,2)
+HLOOKUP(1200,c1:e3,2)
+HLOOKUP(-200,c1:e3,2)
+HLOOKUP(-2,A7:E7,1)
+HLOOKUP(TRUE,A7:E7,1)
+HLOOKUP(TRUE,A5:E6,1)
+HLOOKUP(#NUM!,A5:E6,1)
+HLOOKUP(d5,A5:E6,1)
+HLOOKUP(3.45,A2:E4,3,FALSE)
+HLOOKUP(-5,A1:E2,0,TRUE)
+HLOOKUP(-5,A1:E2,-1,TRUE)
+' Only do basic tests for VLookup since we are re-using most of the code
+vlookup(0.56,a1:b7,2)
+vlookup(0.56,a1:b7,3)
+vlookup("123",a1:b7,2)
+vlookup(100, b2:d5,3)
+vlookup(50,b1:c2,2)
+vlookup(50,b1:c2,2, false)
+vlookup("(*", d1:e7,2)
+indirect("a1")
+indirect("")
+indirect("b2")
+indirect(a4)
+indirect(14)
+sum(indirect("a1:e2"))
+sum(indirect("a:a"))
+sum(indirect("1:1"))
+ISTEXT(INDIRECT("e4"))
+lookup(-5,a1:e1,a4:e4)
+lookup(100,c2:e2,c1:e1)
+lookup("eugene",a1:a7,c1:c7)
+lookup(0.56,a1:a7,c1:c7)
+lookup(50, b1:b2, d1:d2)
+lookup(True,a1:a7,c1:c7)
+lookup(123.34,a1,e4)
+match(0.56,a1:a7,0)
+match("123",a1:a7,0)
+match(100,b1:b2,20)
+match(100,b1:b2)
+match(50,b1:b2,1)
+match(6,b1:b2,1)
+match(3.45,d1:d2,-2)
+match(2000,d1:d2,-1)
+match(500,d1:d2,-2)
+MATCH(5000,D1:D2,-500)
+MATCH("e*",A3:A4,0)
+MATCH("12?",A3:A4,0)
+' Date and time functions
+Datevalue("January 18, 2007")
+Datevalue("04/04/1999")
+datevalue("abc")
+Date(2005,1,1)
+date(1997,12,31)
+date(2008,14,2)
+date(2008,-3,2)
+date(2008,1,35)
+date(2008,1,-15)
+date(2005,-10,-60)
+day(today())
+day(date(1997,12,31))
+hour(now())
+month(date(1997,12,31))
+month(Now())
+second(timevalue("6:18:54 PM"))
+year(now())
+weekday(now())
+weekday(now(),1)
+weekday(now(),2)
+weekday(now(),3)
+weekday(now(),14)
+weekday(now(),0)
+weekday(now(),-9)
+days360(date(2008,1,30), date(2008,2,1))
+DAYS360(DATE(2004,2,27),DATE(2005,8,20))
+DAYS360(DATE(2004,2,28),DATE(2005,8,20))
+DAYS360(DATE(2004,2,29),DATE(2005,8,20))
+DAYS360(DATE(2004,3,1),DATE(2005,8,20))
+DAYS360(DATE(2004,3,29),DATE(2005,8,20))
+DAYS360(DATE(2004,3,30),DATE(2005,8,20))
+DAYS360(DATE(2004,3,15),DATE(2005,10,30))
+DAYS360(DATE(2004,3,16),DATE(2005,10,31))
+DAYS360(DATE(2004,3,29),DATE(2005,10,30))
+DAYS360(DATE(2004,3,31),DATE(2005,10,31))
+DAYS360(DATE(2004,2,28),DATE(2005,10,31))
+DAYS360(DATE(2004,2,29),DATE(2005,10,31))
+DAYS360(DATE(2004,1,28),DATE(2005,10,31),false)
+DAYS360(DATE(2004,3,31),DATE(2005,10,31),true)
+DAYS360(DATE(2004,2,28),DATE(2005,10,31),true)
+DAYS360(DATE(2004,2,29),DATE(2005,10,31),true)
+DAYS360(DATE(2004,1,28),DATE(2005,10,31),true)
+' with reversed dates
+DAYS360(DATE(2005,10,31),DATE(2004,2,28))
+DAYS360(DATE(2005,10,31),DATE(2004,2,28),true)
+DAYS360(DATE(2005,8,20),DATE(2004,2,27))
+' Statistical functions
+countblank(a1:e7)
+countblank(a1:e2)
+countblank(a6:e6)
+countblank(a5:e5)
+countblank(a6)
+countif(a1:e1, 13)
+countif(a1:e1, 0.56)
+countif(a1:e1, -5)
+countif(a4:e4, "s")
+countif(a4:e4, "=eugene")
+countif(a1:e2, ">50")
+countif(a1:e2, "=-5")
+countif(a1:e2, "<=0")
+countif(a1:e2, "<>100")
+countif(a1:e2, "=1000.23")
+countif(a1:e2, "1000.23")
+countif(a1:e7, "")
+countif(a1:e7, "=")
+countif(a1:e7, "<>")
+countif(a1:e7, ">")
+countif(a1:e7, "<")
+countif(a1:e7, ">=")
+countif(a1:e7, true)
+countif(a1:e7, "=true")
+countif(a1:e7, "<>true")
+Count(1,2,3)
+count(1, "2", True)
+count("a", "zzz", 1/0)
+count(1,a1)
+count("aa",a1:d2)
+count(a1:d5)
+count(a1:d5, a1, "zz", "123", True, 1/0)
+count(a1:d6)
+max("zz")
+max(13, 15.53)
+max(13, "abc")
+max(10, true, "1000")
+max(a4)
+max(a1:d2)
+max(100, d1, b3, c4)
+MAX("aa",C5)
+MAX(C5, "aa")
+MAX(100,C5)
+max(-50, -100, c1)
+max(a1:d6)
+Average(1,324.43, 88.93)
+Average(14.45, "100", True)
+Average("zz", 100)
+Average(14, 1/0)
+Average(99, "100",a1,b3,c4)
+Average(99, "100",a1,b3,c4, d5)
+AVERAGE(99, a1:d2)
+AVERAGE(99, a1:d3)
+AVERAGE(99, a1:d4)
+average(a4)
+average(b5)
+average(a1:d6)
+counta("zzz", 1/0)
+counta(a1:d6)
+Counta(1,2,3)
+counta(1, "2", True)
+counta("a", "zzz", 1/0)
+counta(1,a1)
+counta("aa",a1:d2)
+counta(a1:d5)
+counta(a1:d5, a1, "zz", "123", True, 1/0)
+counta(a1:d6)
+averagea(a1:a4, a6:a7)
+averagea(a1:d7)
+AverageA(1,324.43, 88.93)
+AverageA(14.45, "100", True)
+AverageA("zz", 100)
+AverageA(14, 1/0)
+AverageA(99, "100",a1,b3,c4)
+AverageA(99, "100",a1,b3,c4, d5)
+AVERAGEA(99, a1:d2)
+AVERAGEA(99, a1:d3)
+AVERAGEA(99, a1:d4)
+averageA(a4)
+averageA(b5)
+averageA(a1:d6)
+stdev(10,20,30,40)
+stdev(10)
+stdev("a")
+stdev(a1:e2)
+stdev(a1:e3)
+stdev(a1:e4)
+stdev(b1:e5)
+STDEV(A1:E1, A7:E7)
+STDEV(A1:E1, A6:E7)
+STDEV(A6:E7)
+STDEV(A1:a4)
+stdevp(10,20,30,40)
+stdevp(10)
+stdevp("a")
+stdevp(a1:e2)
+stdevp(a1:e3)
+stdevp(a1:e4)
+stdevp(b1:e5)
+STDEVp(A1:E1, A7:E7)
+STDEVp(A1:E1, A6:E7)
+STDEVp(A6:E7)
+STDEVp(A1:a4)
+stdeva(a7:e7)
+STDEVA(A1:E4,A6:E7)
+stdevpa(a7:e7)
+STDEVpA(A1:E4,A6:E7)
+var(10,20,30,40)
+var(10)
+var("a")
+var(a1:e2)
+var(a1:e3)
+var(a1:e4)
+var(b1:e5)
+var(A1:E1, A7:E7)
+var(A1:E1, A6:E7)
+var(A6:E7)
+var(A1:a4)
+varp(10,20,30,40)
+varp(10)
+varp("a")
+varp(a1:e2)
+varp(a1:e3)
+varp(a1:e4)
+varp(b1:e5)
+varp(A1:E1, A7:E7)
+varp(A1:E1, A6:E7)
+varp(A6:E7)
+varp(A1:a4)
+vara(a7:e7)
+varA(A1:E4,A6:E7)
+varpa(a7:e7)
+varpA(A1:E4,A6:E7)
+min(0)
+min(100,200,300)
+min(100,500,-2500)
+min(a1:e2)
+min(a1:e2, -2500)
+min(a6:e7)
+maxa(a6:e7)
+maxa(a6:e7,100)
+mina(a6:e7)
+mina(a6:e7,100,-300)
+mode(1,2,3)
+mode(12.5, 100,12.5, 200)
+mode(10,-5,20,20,-5,-5,30)
+mode(1,1,2,2)
+mode(a1:e4)
+mode(c1:e7)
+mode(a1:e4,a6:e7,3.45)
+median(10,20)
+median(10)
+median(1,2,3,4,5,6)
+median(10,11,12,13,14)
+median(a6:e7)
+median(a1:e4)
+MEDIAN(A6:D6,A7:E7)
+MEDIAN(A1:E1,A2:D2)
+' Functions with row/col ranges
+count(a:b)
+sum(a:e)
+sum(b:b)
+count(1:2)
+sum(1:7)
+sum(2:2)
+countA(a:e)
+countA(1:7)

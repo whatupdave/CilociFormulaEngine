@@ -1,0 +1,11 @@
+FormulaEngine
+-------------
+
+Release Notes:
+
+Version: [Version]
+
+New features:
+-All references now have a Recalculated event
+
+Bug fixes:

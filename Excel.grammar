@@ -1,0 +1,127 @@
+%header%
+
+DESCRIPTION = "A grammar for Excel style formulas"
+AUTHOR      = "Eugene Ciloci"
+VERSION     = "1.0"
+DATE        = "Feb 2007"
+
+GRAMMARTYPE = "LL"
+CASESENSITIVE = "False"
+
+LICENSE = "This library is free software; you can redistribute it and/or
+           modify it under the terms of the GNU Lesser General Public License
+           as published by the Free Software Foundation; either version 2.1
+           of the License, or (at your option) any later version.
+
+           This library is distributed in the hope that it will be useful,
+           but WITHOUT ANY WARRANTY; without even the implied warranty of
+           MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+           Lesser General Public License for more details.
+
+           You should have received a copy of the GNU Lesser General Public
+           License along with this library; if not, write to the Free
+           Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+           MA 02111-1307, USA.
+"
+
+COPYRIGHT = "Copyright (c) 2007 Eugene Ciloci"
+
+/** Token definitions **/
+%tokens%
+
+ADD                          = "+"
+SUB                          = "-"
+MUL                          = "*"
+DIV                          = "/"
+EXP                          = "^"
+CONCAT			     = "&"
+LEFT_PAREN                   = "("
+RIGHT_PAREN                  = ")"
+PERCENT 		     = "%"
+WHITESPACE                   = <<\s+>> %ignore%
+ARG_SEPARATOR  		     = ","
+EQ			     = "="
+LT			     = "<"
+GT			     = ">"
+LTE                          = "<="
+GTE                          = ">="
+NE                           = "<>"
+
+// Primitives
+STRING_LITERAL		     = <<"(""|[^"])*">>
+NUMBER                       = <<\d+(\.\d+)?([e][+-]\d{1,3})?>>
+TRUE			     = "True"
+FALSE			     = "False"
+FUNCTION_NAME                = <<[a-z][\w]*\(>>
+
+// Error constants
+DIV_ERROR		     = "#DIV/0!"
+NA_ERROR                     = "#N/A"
+NAME_ERROR	             = "#NAME?"
+NULL_ERROR		     = "#NULL!"
+REF_ERROR                    = "#REF!"
+VALUE_ERROR                  = "#VALUE!"
+NUM_ERROR                    = "#NUM!"
+
+// References
+CELL                         = <<\$?[a-z]{1,2}\$?\d{1,5}>>
+CELL_RANGE                   = <<\$?[a-z]{1,2}\$?\d{1,5}:\$?[a-z]{1,2}\$?\d{1,5}>>
+ROW_RANGE		     = <<\$?\d{1,5}:\$?\d{1,5}>>
+COLUMN_RANGE		     = <<\$?[a-z]{1,2}:\$?[a-z]{1,2}>>
+SHEET_NAME                   = <<[_a-z][\w]*!>>
+DEFINED_NAME                 = <<[_a-z][\w]*>>
+
+/** Production definitions **/
+%productions%
+
+Formula = EQ? ScalarFormula;
+
+ScalarFormula = PrimaryExpression;
+
+PrimaryExpression = Expression;
+
+Expression = LogicalExpression;
+
+LogicalExpression = ConcatExpression {LogicalOp ConcatExpression};
+
+LogicalOp = "=" | ">" | "<" | ">=" | "<=" | "<>";
+
+ConcatExpression = AdditiveExpression {"&" AdditiveExpression};
+
+AdditiveExpression = MultiplicativeExpression {AdditiveOp MultiplicativeExpression};
+
+AdditiveOp = "+" | "-";
+
+MultiplicativeExpression = ExponentiationExpression {MultiplicativeOp ExponentiationExpression};
+
+MultiplicativeOp = "*" | "/";
+
+ExponentiationExpression = PercentExpression {"^" PercentExpression};
+
+PercentExpression = UnaryExpression "%"*;
+
+UnaryExpression = {"+" | "-"} BasicExpression;
+
+BasicExpression = Primitive | FunctionCall | Reference | ExpressionGroup | "";
+
+// -------- References ----------
+
+Reference = DEFINED_NAME | GridReferenceExpression;
+
+GridReferenceExpression = SHEET_NAME? GridReference;
+
+GridReference = CELL | CELL_RANGE | ROW_RANGE | COLUMN_RANGE;
+
+// ------ Basic types ------
+
+FunctionCall = FUNCTION_NAME ArgumentList? ")";
+
+ArgumentList = Expression {"," Expression};
+
+ExpressionGroup = "(" Expression ")";
+
+Primitive = NUMBER | Boolean | STRING_LITERAL | ErrorExpression;
+
+Boolean = TRUE | FALSE;
+
+ErrorExpression = DIV_ERROR | NA_ERROR | NAME_ERROR | NULL_ERROR | REF_ERROR | VALUE_ERROR | NUM_ERROR;

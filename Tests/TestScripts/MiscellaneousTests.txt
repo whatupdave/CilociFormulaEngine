@@ -1,0 +1,99 @@
+' Various tests that don't fit into any other category
+'	Backwards references
+CreateFormulaExecutor†a1;f:d•FirstReferenceEqualValidator†d:f
+CreateFormulaExecutor†a1;4:2•FirstReferenceEqualValidator†2:4
+CreateFormulaExecutor†a1;d3:c5•FirstReferenceEqualValidator†c3:d5
+CreateFormulaExecutor†a1;c5:d3•FirstReferenceEqualValidator†c3:d5
+CreateFormulaExecutor†a1;d5:c3•FirstReferenceEqualValidator†c3:d5
+' Test that we properly clean up formulas when they are destroyed
+CreateFormulaExecutor†a1;b1+c1+eugene•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+CreateFormulaExecutor†a1;b1+c1;b1;d1+2;c1;sum(e1:f2)•DestroyFormulaExecutor†0;1;2•FormulaEngineEmptyValidator†
+'	even with identical references
+CreateFormulaExecutor†a1;b1+b1 + b1•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+' Test that we can remove a self-referencing formula without errors
+CreateFormulaExecutor†a1;b2 + sum(a1:b2)•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+' Test that we can remove a formula with invalid references without errors
+CreateFormulaExecutor†a1;b2+1•MoveRangeExecutor†c2;0;-1•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+'	same thing but for two formulas with same invalid reference
+CreateFormulaExecutor†a1;b2+1;a2;sum(b2)•MoveRangeExecutor†c2;0;-1•DestroyFormulaExecutor†0;1•FormulaEngineEmptyValidator†
+'	make sure we can handle this case also
+CreateFormulaExecutor†a1;b2+b2•MoveRangeExecutor†c2;0;-1•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+'   try case of moving one reference onto another (formula will be automatically removed)
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†b2;-1;-1•FormulaEngineEmptyValidator†
+CreateFormulaExecutor†a1;b2•MoveRangeExecutor†a1;1;1•DestroyFormulaExecutor†0•FormulaEngineEmptyValidator†
+' Test that we don't pool invalid references.  Should have 3 references in pool: a1, a7, b2
+CreateFormulaExecutor†a1;b2+1•MoveRangeExecutor†c2;0;-1•CreateFormulaExecutor†a7;b2+1•PooledReferenceCountValidator†3
+' Test that we do a last recalculate before references are destroyed so that all values are in sync
+CreateFormulaExecutor†a1;b2+1•RemoveColumnsExecutor†2;1•CellValueEqualsErrorValidator†A1;Ref
+' Invalidate a source; last formula should have an error value
+CreateFormulaExecutor†b2;a1+1;c3;b2+10•MoveRangeExecutor†a2;-1;0•CellValueEqualsErrorValidator†c3;Ref•ClearCellValueExecutor†C3
+' Same thing but invalidate a non-source reference
+CreateFormulaExecutor†b2;a1+1;c3;b2+10•MoveRangeExecutor†b3;-1;0•CellValueEqualsErrorValidator†c3;Ref•ClearCellValueExecutor†C3
+' Test that we can handle a formula with multiple equal references
+CreateFormulaExecutor†a1;b2+1+b2
+' Test our formula formatting
+'	basic
+CreateFormulaExecutor†b2;a1+1•FormulaFormatValidator†a1+1
+CreateFormulaExecutor†b2;sum(c1:d2)•FormulaFormatValidator†sum(c1:d2)
+CreateFormulaExecutor†b2;sum(c:d)•FormulaFormatValidator†sum(c:d)
+CreateFormulaExecutor†b2;sum(2:3) + sum(4:5)•FormulaFormatValidator†sum(2:3) + sum(4:5)
+'	with sheet references
+CreateFormulaExecutor†b2;Sheet1!a1+1•FormulaFormatValidator†Sheet1!a1+1
+CreateFormulaExecutor†b2;sum(Sheet2!c1:d2)•FormulaFormatValidator†sum(Sheet2!c1:d2)
+CreateFormulaExecutor†b2;sum(Sheet2!c:d)•FormulaFormatValidator†sum(Sheet2!c:d)
+CreateFormulaExecutor†b2;sum(Sheet1!2:3) + sum(Sheet2!4:5)•FormulaFormatValidator†sum(Sheet1!2:3) + sum(Sheet2!4:5)
+'		...and absolute references
+CreateFormulaExecutor†b2;Sheet1!$a$1+1•FormulaFormatValidator†Sheet1!$a$1+1
+CreateFormulaExecutor†b2;Sheet1!a$1+1•FormulaFormatValidator†Sheet1!a$1+1
+CreateFormulaExecutor†b2;Sheet1!$a1+1•FormulaFormatValidator†Sheet1!$a1+1
+CreateFormulaExecutor†b2;sum(Sheet1!$a:$b)•FormulaFormatValidator†sum(Sheet1!$a:$b)
+CreateFormulaExecutor†b2;sum(Sheet1!a:$b)•FormulaFormatValidator†sum(Sheet1!a:$b)
+CreateFormulaExecutor†b2;sum(Sheet1!$a:b)•FormulaFormatValidator†sum(Sheet1!$a:b)
+CreateFormulaExecutor†c4;sum(Sheet1!$a$1:$b$2)•FormulaFormatValidator†sum(Sheet1!$a$1:$b$2)
+'	complex case
+CreateFormulaExecutor†b2;sum(a1) + (13+(4.5*2)) * sum(a1, (a2-2), b1:b2)•FormulaFormatValidator†sum(a1) + (13+(4.5*2)) * sum(a1, (a2-2), b1:b2)
+' Test our handling of copied formulas
+'	simple case
+CreateFormulaExecutor†b2;a1+1•CopyFormulaExecutor†c3•DestroyFormulasInRangeExecutor†b2:c3•FormulaEngineEmptyValidator†
+'	with invalid references resulting from the copy
+CreateFormulaExecutor†b2;a1+1•CopyFormulaExecutor†a3•DestroyFormulasInRangeExecutor†a2:b3•FormulaEngineEmptyValidator†
+'	with invalid references in source formula
+CreateFormulaExecutor†b2;a1+1•MoveRangeExecutor†a2;-1;0•CopyFormulaExecutor†b5•DestroyFormulasInRangeExecutor†b2:b5•FormulaEngineEmptyValidator†
+'	test handling of cell range copied to outside of grid
+CreateFormulaExecutor†b2;sum(a4:b5)•CopyFormulaExecutor†a3•FirstReferenceInvalidValidator†a3
+'   test we can handle copying a formula with multiple indentical references but with different relative/absolute specifiers
+CreateFormulaExecutor†b2;a1 + $a$1•CopyFormulaExecutor†c2•SetActiveFormulaExecutor†c2•FormulaReferencesEqualValidator†B1;A1•PooledReferenceCountValidator†4
+'   test copy adjust with non-cell references
+CreateFormulaExecutor†b3;SUM(C1:D2)•CopyFormulaExecutor†c3•SetActiveFormulaExecutor†c3•FormulaReferencesEqualValidator†D1:E2
+CreateFormulaExecutor†b3;SUM(C:D)•CopyFormulaExecutor†c3•SetActiveFormulaExecutor†c3•FormulaReferencesEqualValidator†D:E
+CreateFormulaExecutor†b3;SUM(5:8)•CopyFormulaExecutor†b4•SetActiveFormulaExecutor†b4•FormulaReferencesEqualValidator†6:9
+CreateFormulaExecutor†b3;SUM($C$1:D2)•CopyFormulaExecutor†c3•SetActiveFormulaExecutor†c3•FormulaReferencesEqualValidator†C1:E2
+' Test calling a function with an invalid number of arguments
+FormulaInvalidValidator†sin()
+FormulaInvalidValidator†sin(1,2)
+'	same but for variable argument functions
+FormulaInvalidValidator†SUM(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31)
+FormulaInvalidValidator†sum()
+' Test that formulas with invalid references evaluate to #REF!
+CreateFormulaExecutor†a1;E2+2•RemoveColumnsExecutor†5;1•FormulaResultEqualsErrorValidator†Ref
+CreateFormulaExecutor†a1;E2:f4 + 2•RemoveColumnsExecutor†5;2•FormulaResultEqualsErrorValidator†Ref
+CreateFormulaExecutor†a1;sum(E2,14)•RemoveColumnsExecutor†5;1•FormulaResultEqualsErrorValidator†Ref
+CreateFormulaExecutor†a1;sum(E2,e5)•RemoveColumnsExecutor†5;1•FormulaResultEqualsErrorValidator†Ref
+CreateFormulaExecutor†a1;sum(E2:f4,14)•RemoveColumnsExecutor†5;3•FormulaResultEqualsErrorValidator†Ref
+' Test that creating formulas with invalid references causes an exception
+'	references outside the sheet
+FormulaInvalidValidator†hn2490 + b2 + sum(fk200:fs300, 1000:1200, yy:zz)
+'	invalid sheet names
+FormulaInvalidValidator†SomeSheet!b2+1
+FormulaInvalidValidator†sum(SomeSheet!b2,1) + 1
+' Test sumif with a sum range that is outside the sheet
+CreateFormulaExecutor†a1;sumif(a1:a3, 14, a14)•FormulaResultEqualsErrorValidator†Ref
+CreateFormulaExecutor†a1;sumif(a1:c1, 14, n4)•FormulaResultEqualsErrorValidator†Ref
+' Test that removing a sheet invalidates all references on that sheet
+CreateFormulaExecutor†a1;Sheet2!b2+1•RemoveSheetExecutor†1•FormulaResultEqualsErrorValidator†Ref
+' Test that removing a sheet destroys all formulas on that sheet
+CreateFormulaExecutor†a1;b2+1•RemoveSheetExecutor†0•FormulaEngineEmptyValidator†
+' Test some overlapping invalid references
+CreateFormulaExecutor†a1;b2+c2•RemoveColumnsExecutor†2;1•RemoveColumnsExecutor†2;1
+' Test that removing a named formula causes all dependents to evaluate to a name error
+CreateNamedFormulaExecutor†test;cos(45)•CreateFormulaExecutor†a1;test+1•DestroyNamedFormulaExecutor†test•FormulaResultEqualsErrorValidator†Name

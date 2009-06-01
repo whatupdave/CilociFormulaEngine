@@ -1,0 +1,35 @@
+' ---Test that we can handle circular references
+' Formula referencing itself
+CreateFormulaExecutor†a1;a1+1•CircularReferenceDetectedValidator†
+' Two formulas referencing each other
+CreateFormulaExecutor†a2;b1+1;b1;a2+1•CircularReferenceDetectedValidator†
+' Triangle circular reference
+CreateFormulaExecutor†a2;c2+4;b1;a2+1;c2;b1+2•CircularReferenceDetectedValidator†
+' More complicated cases
+CreateFormulaExecutor†a3;b5+4;b1;a3+1;c3;b1+2;d3;b1+3;b5;c3+d3•CircularReferenceDetectedValidator†
+' Ranges
+CreateFormulaExecutor†c1;sum(a4:b6);d5;c1+1;b6;d5+2•CircularReferenceDetectedValidator†
+CreateFormulaExecutor†a1;c5 + sum(a1:b2)•CircularReferenceDetectedValidator†
+' Row/Column vectors
+CreateFormulaExecutor†a1;sum(a:b)•CircularReferenceDetectedValidator†
+CreateFormulaExecutor†a1;sum(1:2)•CircularReferenceDetectedValidator†
+' ---Test circular reference detection when ranges are moved
+CreateFormulaExecutor†a1;b2:c3•MoveRangeExecutor†a1;1;1•CircularReferenceDetectedValidator†
+CreateFormulaExecutor†c1;SUM(A3:B5);d4;c1+1;b6;d4+2•MoveRangeExecutor†b6;-1;0•CircularReferenceDetectedValidator†
+CreateFormulaExecutor†c1;SUM(A3:B5);c4;c1+1;c5;c4+2•MoveRangeExecutor†c4:c5;0;-2•CircularReferenceDetectedValidator†
+' ---Test calculation order with circular references
+CreateFormulaExecutor†a1;a1+1•GetCalculationListExecutor†A1•EmptyCalculationOrderValidator†
+CreateFormulaExecutor†a2;b1+1;b1;a2+1•GetCalculationListExecutor†A2•EmptyCalculationOrderValidator†
+CreateFormulaExecutor†a2;b1+1;b1;a2+1•GetCalculationListExecutor†B1•EmptyCalculationOrderValidator†
+' Test that we detect circular references with cell ranges
+' ...when a formula is created
+CreateFormulaExecutor†c1;SUM(A3:B5);d4;c1+1;b5;d4+2•GetCalculationListExecutor†a4:b5•EmptyCalculationOrderValidator†
+' ...when a range is moved
+CreateFormulaExecutor†c1;SUM(A3:B5);d4;c1+1;b6;d4+2•MoveRangeExecutor†b6;-1;0•GetCalculationListExecutor†a4:b5•EmptyCalculationOrderValidator†
+' Make a circular reference move range so that it goes away
+CreateFormulaExecutor†c1;SUM(A3:B5);d4;c1+1;b5;d4+2•MoveRangeExecutor†b5;1;1•GetCalculationListExecutor†c3:b5•NonEmptyCalculationOrderValidator†
+' Test circular references with multiple sheets
+'	Simple case
+CreateFormulaExecutor†Sheet1!a1;Sheet2!b1+1;Sheet2!b1;Sheet1!A1•CircularReferenceDetectedValidator†
+'	More complicated
+CreateFormulaExecutor†a1;Sheet2!b1+1;Sheet2!b1;c2;c2;a1+1•CircularReferenceDetectedValidator†
