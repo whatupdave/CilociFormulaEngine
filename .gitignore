@@ -1,3 +1,4 @@
+*.suo
 **/*.vbproj.user
 
 ConsoleTester/bin/

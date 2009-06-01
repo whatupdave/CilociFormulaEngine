@@ -16,6 +16,7 @@
 ' FormulaEngine - A library for parsing and managing formulas
 ' Copyright © 2007 Eugene Ciloci
 '
+Imports System.Collections.Generic
 
 ''' <summary>
 ''' Implements all the functionality of a formula engine
@@ -51,6 +52,8 @@ Public Class FormulaEngine
 	Private MySheets As SheetCollection
     Private MyEngineInfo As FormulaEngineInfo
     Private MyCurrentlyEvaluatingFormula As Formula
+
+    Private MyFormulaCache As Dictionary(Of String, Formula) = New Dictionary(Of String, Formula)
 
 	''' <summary>Notifies listeners that the engine has detected one or more circular references</summary>
 	''' <param name="sender">An instance of the formula engine</param>
@@ -99,10 +102,13 @@ Public Class FormulaEngine
 	''' except that the Excel grammar is used.</remarks>
 	''' <exception cref="T:ciloci.FormulaEngine.InvalidFormulaException">The formula could not be created</exception>
 	Public Function CreateFormula(ByVal expression As String) As Formula
-		ValidateNonNull(expression, "expression")
-		Dim f As New Formula(Me, expression, GrammarType.Excel)
-		Return f
-	End Function
+        ValidateNonNull(expression, "expression")
+        If (Not MyFormulaCache.ContainsKey(expression)) Then
+            MyFormulaCache(expression) = New Formula(Me, expression, GrammarType.Excel)
+        End If
+
+        Return MyFormulaCache(expression)
+    End Function
 
 	''' <summary>
 	''' Creates a formula by parsing an expression using a specific grammar
@@ -114,10 +120,13 @@ Public Class FormulaEngine
 	''' not part of the formula engine; you must explicitly add it.</remarks>
 	''' <exception cref="T:ciloci.FormulaEngine.InvalidFormulaException">The formula could not be created</exception>
 	Public Function CreateFormula(ByVal expression As String, ByVal gt As GrammarType) As Formula
-		ValidateNonNull(expression, "expression")
-		Dim f As New Formula(Me, expression, gt)
-		Return f
-	End Function
+        ValidateNonNull(expression, "expression")
+        If (Not MyFormulaCache.ContainsKey(expression)) Then
+            MyFormulaCache(expression) = New Formula(Me, expression, gt)
+        End If
+
+        Return MyFormulaCache(expression)
+    End Function
 
 	''' <overloads>Evaluates an expression</overloads>
 	''' <summary>

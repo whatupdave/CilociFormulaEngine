@@ -320,7 +320,7 @@ Public Class Formula
 		SyncLock GetType(Object)
 			Dim sr As New System.IO.StringReader(formula)
 			Dim parser As PerCederberg.Grammatica.Runtime.Parser = ParserFactory.GetParser(gt)
-			parser.Reset()
+            'parser.Reset(sr)
 			parser.Tokenizer.Reset(sr)
 
 			Try
