@@ -53,14 +53,12 @@ Public Class FormulaEngine
     Private MyEngineInfo As FormulaEngineInfo
     Private MyCurrentlyEvaluatingFormula As Formula
 
-    Private MyFormulaCache As Dictionary(Of String, Formula) = New Dictionary(Of String, Formula)
-
-	''' <summary>Notifies listeners that the engine has detected one or more circular references</summary>
-	''' <param name="sender">An instance of the formula engine</param>
-	''' <param name="e">Information about the circular references</param>
-	''' <remarks>This event will get fired when the engine detects one or more circular references.  Circular references are allowed
-	''' by the engine but will be ignored during any recalculations.  You would typically listen to this event when you want
-	''' to notify users that they have caused a circular reference.</remarks>
+    ''' <summary>Notifies listeners that the engine has detected one or more circular references</summary>
+    ''' <param name="sender">An instance of the formula engine</param>
+    ''' <param name="e">Information about the circular references</param>
+    ''' <remarks>This event will get fired when the engine detects one or more circular references.  Circular references are allowed
+    ''' by the engine but will be ignored during any recalculations.  You would typically listen to this event when you want
+    ''' to notify users that they have caused a circular reference.</remarks>
 	Public Event CircularReferenceDetected(ByVal sender As Object, ByVal e As CircularReferenceDetectedEventArgs)
 	Private Const VERSION As Integer = 1
 
@@ -103,11 +101,7 @@ Public Class FormulaEngine
 	''' <exception cref="T:ciloci.FormulaEngine.InvalidFormulaException">The formula could not be created</exception>
 	Public Function CreateFormula(ByVal expression As String) As Formula
         ValidateNonNull(expression, "expression")
-        If (Not MyFormulaCache.ContainsKey(expression)) Then
-            MyFormulaCache(expression) = New Formula(Me, expression, GrammarType.Excel)
-        End If
-
-        Return MyFormulaCache(expression)
+        Return New Formula(Me, expression, GrammarType.Excel)
     End Function
 
 	''' <summary>
@@ -121,11 +115,7 @@ Public Class FormulaEngine
 	''' <exception cref="T:ciloci.FormulaEngine.InvalidFormulaException">The formula could not be created</exception>
 	Public Function CreateFormula(ByVal expression As String, ByVal gt As GrammarType) As Formula
         ValidateNonNull(expression, "expression")
-        If (Not MyFormulaCache.ContainsKey(expression)) Then
-            MyFormulaCache(expression) = New Formula(Me, expression, gt)
-        End If
-
-        Return MyFormulaCache(expression)
+        Return New Formula(Me, expression, gt)
     End Function
 
 	''' <overloads>Evaluates an expression</overloads>

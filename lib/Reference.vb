@@ -674,300 +674,305 @@ Friend MustInherit Class SheetReference
 End Class
 
 <Serializable()> _
+<DebuggerDisplay("Name = {ToString()}")> _
 Friend Class CellReference
-	Inherits SheetReference
-	Implements IFormulaSelfReference
+    Inherits SheetReference
+    Implements IFormulaSelfReference
 
-	<Serializable()> _
-	Private Class Properties
-		Inherits GridReferenceProperties
+    Public Overrides Function ToString() As String
+        Return String.Format("R{0}C{1}", Row, Column)
+    End Function
 
-		Public ColumnAbsolute As Boolean
-		Public RowAbsolute As Boolean
-	End Class
+    <Serializable()> _
+ Private Class Properties
+        Inherits GridReferenceProperties
 
-	Private Class CellGridOps
-		Inherits GridOperationsBase
+        Public ColumnAbsolute As Boolean
+        Public RowAbsolute As Boolean
+    End Class
 
-		Private MyOwner As CellReference
+    Private Class CellGridOps
+        Inherits GridOperationsBase
 
-		Public Sub New(ByVal owner As CellReference)
-			MyOwner = owner
-		End Sub
+        Private MyOwner As CellReference
 
-		Public Overrides Function OnColumnsInserted(ByVal insertAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
-			If MyOwner.MyColumnIndex >= insertAt Then
-				' We are in the inserted area; we must adjust
-				MyOwner.MyColumnIndex += count
-				Return ReferenceOperationResultType.Affected
-			Else
-				Return ReferenceOperationResultType.NotAffected
-			End If
-		End Function
+        Public Sub New(ByVal owner As CellReference)
+            MyOwner = owner
+        End Sub
 
-		Public Overrides Function OnColumnsRemoved(ByVal removeAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
-			If MyOwner.MyColumnIndex > removeAt + count - 1 Then
-				' We are to the right of the removed hole
-				MyOwner.MyColumnIndex -= count
-				Return ReferenceOperationResultType.Affected
-			ElseIf MyOwner.MyColumnIndex >= removeAt Then
-				' We are in the removed hole
-				Return ReferenceOperationResultType.Invalidated
-			Else
-				Return ReferenceOperationResultType.NotAffected
-			End If
-		End Function
+        Public Overrides Function OnColumnsInserted(ByVal insertAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
+            If MyOwner.MyColumnIndex >= insertAt Then
+                ' We are in the inserted area; we must adjust
+                MyOwner.MyColumnIndex += count
+                Return ReferenceOperationResultType.Affected
+            Else
+                Return ReferenceOperationResultType.NotAffected
+            End If
+        End Function
 
-		Public Overrides Function OnRangeMoved(ByVal source As SheetReference, ByVal dest As SheetReference) As ReferenceOperationResultType
-			Dim sourceRect As Rectangle = source.Range
-			Dim destRect As Rectangle = dest.Range
-			Dim rowOffset, colOffset As Integer
-			rowOffset = destRect.Top - sourceRect.Top
-			colOffset = destRect.Left - sourceRect.Left
-			Dim myRect As Rectangle = MyOwner.Range
+        Public Overrides Function OnColumnsRemoved(ByVal removeAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
+            If MyOwner.MyColumnIndex > removeAt + count - 1 Then
+                ' We are to the right of the removed hole
+                MyOwner.MyColumnIndex -= count
+                Return ReferenceOperationResultType.Affected
+            ElseIf MyOwner.MyColumnIndex >= removeAt Then
+                ' We are in the removed hole
+                Return ReferenceOperationResultType.Invalidated
+            Else
+                Return ReferenceOperationResultType.NotAffected
+            End If
+        End Function
 
-			Dim isContainedInSource As Boolean = sourceRect.Contains(myRect) And MyOwner.IsOnSheet(source.Sheet)
-			Dim isContainedInDest As Boolean = destRect.Contains(myRect) And MyOwner.IsOnSheet(dest.Sheet)
+        Public Overrides Function OnRangeMoved(ByVal source As SheetReference, ByVal dest As SheetReference) As ReferenceOperationResultType
+            Dim sourceRect As Rectangle = source.Range
+            Dim destRect As Rectangle = dest.Range
+            Dim rowOffset, colOffset As Integer
+            rowOffset = destRect.Top - sourceRect.Top
+            colOffset = destRect.Left - sourceRect.Left
+            Dim myRect As Rectangle = MyOwner.Range
 
-			If isContainedInSource = True Then
-				' We are in the moved range so we have to adjust
-				MyOwner.MyRowIndex += rowOffset
-				MyOwner.MyColumnIndex += colOffset
-				MyOwner.SetSheetForRangeMove(dest.Sheet)
-				Return ReferenceOperationResultType.Affected
-			ElseIf isContainedInDest = True Then
-				' We are overwritten by the moved range
-				Return ReferenceOperationResultType.Invalidated
-			Else
-				' We are not affected
-				Return ReferenceOperationResultType.NotAffected
-			End If
-		End Function
+            Dim isContainedInSource As Boolean = sourceRect.Contains(myRect) And MyOwner.IsOnSheet(source.Sheet)
+            Dim isContainedInDest As Boolean = destRect.Contains(myRect) And MyOwner.IsOnSheet(dest.Sheet)
 
-		Public Overrides Function OnRowsInserted(ByVal insertAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
-			If MyOwner.MyRowIndex >= insertAt Then
-				MyOwner.MyRowIndex += count
-				Return ReferenceOperationResultType.Affected
-			Else
-				Return ReferenceOperationResultType.NotAffected
-			End If
-		End Function
+            If isContainedInSource = True Then
+                ' We are in the moved range so we have to adjust
+                MyOwner.MyRowIndex += rowOffset
+                MyOwner.MyColumnIndex += colOffset
+                MyOwner.SetSheetForRangeMove(dest.Sheet)
+                Return ReferenceOperationResultType.Affected
+            ElseIf isContainedInDest = True Then
+                ' We are overwritten by the moved range
+                Return ReferenceOperationResultType.Invalidated
+            Else
+                ' We are not affected
+                Return ReferenceOperationResultType.NotAffected
+            End If
+        End Function
 
-		Public Overrides Function OnRowsRemoved(ByVal removeAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
-			If MyOwner.MyRowIndex > removeAt + count - 1 Then
-				' We are below the removed hole
-				MyOwner.MyRowIndex -= count
-				Return ReferenceOperationResultType.Affected
-			ElseIf MyOwner.MyRowIndex >= removeAt Then
-				' We are in the removed hole
-				Return ReferenceOperationResultType.Invalidated
-			Else
-				Return ReferenceOperationResultType.NotAffected
-			End If
-		End Function
-	End Class
+        Public Overrides Function OnRowsInserted(ByVal insertAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
+            If MyOwner.MyRowIndex >= insertAt Then
+                MyOwner.MyRowIndex += count
+                Return ReferenceOperationResultType.Affected
+            Else
+                Return ReferenceOperationResultType.NotAffected
+            End If
+        End Function
 
-	Private MyRowIndex, MyColumnIndex As Integer
-	Private Shared OurRegex As System.Text.RegularExpressions.Regex = CreateRegex()
+        Public Overrides Function OnRowsRemoved(ByVal removeAt As Integer, ByVal count As Integer) As ReferenceOperationResultType
+            If MyOwner.MyRowIndex > removeAt + count - 1 Then
+                ' We are below the removed hole
+                MyOwner.MyRowIndex -= count
+                Return ReferenceOperationResultType.Affected
+            ElseIf MyOwner.MyRowIndex >= removeAt Then
+                ' We are in the removed hole
+                Return ReferenceOperationResultType.Invalidated
+            Else
+                Return ReferenceOperationResultType.NotAffected
+            End If
+        End Function
+    End Class
 
-	Public Sub New(ByVal rowIndex As Integer, ByVal colIndex As Integer)
-		SheetReference.ValidateColumnIndex(colIndex)
-		SheetReference.ValidateRowIndex(rowIndex)
-		MyRowIndex = rowIndex
-		MyColumnIndex = colIndex
-	End Sub
+    Private MyRowIndex, MyColumnIndex As Integer
+    Private Shared OurRegex As System.Text.RegularExpressions.Regex = CreateRegex()
 
-	Private Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
-		MyBase.New(info, context)
-		MyRowIndex = info.GetInt32("RowIndex")
-		MyColumnIndex = info.GetInt32("ColumnIndex")
-		Me.ComputeHashCode()
-	End Sub
+    Public Sub New(ByVal rowIndex As Integer, ByVal colIndex As Integer)
+        SheetReference.ValidateColumnIndex(colIndex)
+        SheetReference.ValidateRowIndex(rowIndex)
+        MyRowIndex = rowIndex
+        MyColumnIndex = colIndex
+    End Sub
 
-	Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
-		MyBase.GetObjectData(info, context)
-		info.AddValue("RowIndex", MyRowIndex)
-		info.AddValue("ColumnIndex", MyColumnIndex)
-	End Sub
+    Private Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
+        MyBase.New(info, context)
+        MyRowIndex = info.GetInt32("RowIndex")
+        MyColumnIndex = info.GetInt32("ColumnIndex")
+        Me.ComputeHashCode()
+    End Sub
 
-	Protected Overrides Function CreateGridOps() As GridOperationsBase
-		Return New CellGridOps(Me)
-	End Function
+    Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
+        MyBase.GetObjectData(info, context)
+        info.AddValue("RowIndex", MyRowIndex)
+        info.AddValue("ColumnIndex", MyColumnIndex)
+    End Sub
 
-	Public Shared Function FromString(ByVal image As String) As CellReference
-		image = SheetReference.PrepareParseString(image)
-		Dim c1 As Char = image.Chars(0)
-		Dim c2 As Char = image.Chars(1)
+    Protected Overrides Function CreateGridOps() As GridOperationsBase
+        Return New CellGridOps(Me)
+    End Function
 
-		Dim rowStringIndex As Integer
-		Dim rowIndex, columnIndex As String
+    Public Shared Function FromString(ByVal image As String) As CellReference
+        image = SheetReference.PrepareParseString(image)
+        Dim c1 As Char = image.Chars(0)
+        Dim c2 As Char = image.Chars(1)
 
-		If Char.IsLetter(c2) = True Then
-			columnIndex = ColumnLabel2Index(c1, c2)
-			rowStringIndex = 2
-		Else
-			columnIndex = ColumnLabel2Index(c1)
-			rowStringIndex = 1
-		End If
+        Dim rowStringIndex As Integer
+        Dim rowIndex, columnIndex As String
 
-		Dim rowRef As String = image.Substring(rowStringIndex)
+        If Char.IsLetter(c2) = True Then
+            columnIndex = ColumnLabel2Index(c1, c2)
+            rowStringIndex = 2
+        Else
+            columnIndex = ColumnLabel2Index(c1)
+            rowStringIndex = 1
+        End If
 
-		rowIndex = Integer.Parse(rowRef)
+        Dim rowRef As String = image.Substring(rowStringIndex)
 
-		Return New CellReference(rowIndex, columnIndex)
-	End Function
+        rowIndex = Integer.Parse(rowRef)
 
-	Public Shared Function CreateProperties(ByVal implicitSheet As Boolean, ByVal image As String) As ReferenceProperties
-		Dim props As New Properties
-		SheetReference.GetProperties(implicitSheet, props)
+        Return New CellReference(rowIndex, columnIndex)
+    End Function
 
-		props.ColumnAbsolute = image.StartsWith("$")
-		props.RowAbsolute = image.IndexOf("$", 1) <> -1
+    Public Shared Function CreateProperties(ByVal implicitSheet As Boolean, ByVal image As String) As ReferenceProperties
+        Dim props As New Properties
+        SheetReference.GetProperties(implicitSheet, props)
 
-		Return props
-	End Function
+        props.ColumnAbsolute = image.StartsWith("$")
+        props.RowAbsolute = image.IndexOf("$", 1) <> -1
 
-	Private Shared Function CreateRegex() As System.Text.RegularExpressions.Regex
-		Dim exp As String = String.Format("^{0}{1}{2}$", SheetReference.SHEET_REGEX, SheetReference.COLUMN_REGEX, SheetReference.ROW_REGEX)
-		Return New System.Text.RegularExpressions.Regex(exp)
-	End Function
+        Return props
+    End Function
 
-	Public Shared Function IsValidString(ByVal s As String) As Boolean
-		Return OurRegex.IsMatch(s)
-	End Function
+    Private Shared Function CreateRegex() As System.Text.RegularExpressions.Regex
+        Dim exp As String = String.Format("^{0}{1}{2}$", SheetReference.SHEET_REGEX, SheetReference.COLUMN_REGEX, SheetReference.ROW_REGEX)
+        Return New System.Text.RegularExpressions.Regex(exp)
+    End Function
 
-	Public Shared Sub SwapRowProperties(ByVal props1 As ReferenceProperties, ByVal props2 As ReferenceProperties)
-		Dim realProps1, realProps2 As Properties
-		realProps1 = props1
-		realProps2 = props2
+    Public Shared Function IsValidString(ByVal s As String) As Boolean
+        Return OurRegex.IsMatch(s)
+    End Function
 
-		Dim temp As Boolean = realProps1.RowAbsolute
-		realProps1.RowAbsolute = realProps2.RowAbsolute
-		realProps2.RowAbsolute = temp
-	End Sub
+    Public Shared Sub SwapRowProperties(ByVal props1 As ReferenceProperties, ByVal props2 As ReferenceProperties)
+        Dim realProps1, realProps2 As Properties
+        realProps1 = props1
+        realProps2 = props2
 
-	Public Shared Sub SwapColumnProperties(ByVal props1 As ReferenceProperties, ByVal props2 As ReferenceProperties)
-		Dim realProps1, realProps2 As Properties
-		realProps1 = props1
-		realProps2 = props2
+        Dim temp As Boolean = realProps1.RowAbsolute
+        realProps1.RowAbsolute = realProps2.RowAbsolute
+        realProps2.RowAbsolute = temp
+    End Sub
 
-		Dim temp As Boolean = realProps1.ColumnAbsolute
-		realProps1.ColumnAbsolute = realProps2.ColumnAbsolute
-		realProps2.ColumnAbsolute = temp
-	End Sub
+    Public Shared Sub SwapColumnProperties(ByVal props1 As ReferenceProperties, ByVal props2 As ReferenceProperties)
+        Dim realProps1, realProps2 As Properties
+        realProps1 = props1
+        realProps2 = props2
 
-	Private Function GetConvertedTargetOperandValue(ByVal convertType As OperandType) As IOperand
-		Return Me.TargetOperand.Convert(convertType)
-	End Function
+        Dim temp As Boolean = realProps1.ColumnAbsolute
+        realProps1.ColumnAbsolute = realProps2.ColumnAbsolute
+        realProps2.ColumnAbsolute = temp
+    End Sub
 
-	Protected Overrides Sub OnCopyInternal(ByVal rowOffset As Integer, ByVal colOffset As Integer, ByVal destSheet As ISheet, ByVal props As ReferenceProperties)
-		Dim realProps As Properties = props
+    Private Function GetConvertedTargetOperandValue(ByVal convertType As OperandType) As IOperand
+        Return Me.TargetOperand.Convert(convertType)
+    End Function
 
-		MyRowIndex = SheetReference.OffsetIndex(MyRowIndex, rowOffset, realProps.RowAbsolute)
-		MyColumnIndex = SheetReference.OffsetIndex(MyColumnIndex, colOffset, realProps.ColumnAbsolute)
-	End Sub
+    Protected Overrides Sub OnCopyInternal(ByVal rowOffset As Integer, ByVal colOffset As Integer, ByVal destSheet As ISheet, ByVal props As ReferenceProperties)
+        Dim realProps As Properties = props
 
-	Public Overrides Function IsReferenceEqualForCircularReference(ByVal ref As Reference) As Boolean
-		Return ref Is Me
-	End Function
+        MyRowIndex = SheetReference.OffsetIndex(MyRowIndex, rowOffset, realProps.RowAbsolute)
+        MyColumnIndex = SheetReference.OffsetIndex(MyColumnIndex, colOffset, realProps.ColumnAbsolute)
+    End Sub
 
-	Protected Overrides Function FormatInternal() As String
-		Return String.Concat(ColumnIndex2Label(MyColumnIndex), MyRowIndex.ToString())
-	End Function
+    Public Overrides Function IsReferenceEqualForCircularReference(ByVal ref As Reference) As Boolean
+        Return ref Is Me
+    End Function
 
-	Public Function FormatPlain() As String
-		Return Me.FormatInternal()
-	End Function
+    Protected Overrides Function FormatInternal() As String
+        Return String.Concat(ColumnIndex2Label(MyColumnIndex), MyRowIndex.ToString())
+    End Function
 
-	Protected Overloads Overrides Function FormatWithPropsInternal(ByVal props As ReferenceProperties) As String
-		Dim realProps As Properties = props
+    Public Function FormatPlain() As String
+        Return Me.FormatInternal()
+    End Function
 
-		Dim rowString, colString As String
-		Dim rowAbsolute, colAbsolute As String
+    Protected Overloads Overrides Function FormatWithPropsInternal(ByVal props As ReferenceProperties) As String
+        Dim realProps As Properties = props
 
-		rowString = MyRowIndex.ToString()
-		colString = ColumnIndex2Label(MyColumnIndex)
-		rowAbsolute = GetAbsoluteString(realProps.RowAbsolute)
-		colAbsolute = GetAbsoluteString(realProps.ColumnAbsolute)
+        Dim rowString, colString As String
+        Dim rowAbsolute, colAbsolute As String
 
-		Return String.Concat(colAbsolute, colString, rowAbsolute, rowString)
-	End Function
+        rowString = MyRowIndex.ToString()
+        colString = ColumnIndex2Label(MyColumnIndex)
+        rowAbsolute = GetAbsoluteString(realProps.RowAbsolute)
+        colAbsolute = GetAbsoluteString(realProps.ColumnAbsolute)
 
-	Friend Sub Offset(ByVal rowOffset As Integer, ByVal colOffset As Integer)
-		MyRowIndex += rowOffset
-		MyColumnIndex += colOffset
-	End Sub
+        Return String.Concat(colAbsolute, colString, rowAbsolute, rowString)
+    End Function
 
-	Friend Sub SetColumn(ByVal column As Integer)
-		MyColumnIndex = column
-	End Sub
+    Friend Sub Offset(ByVal rowOffset As Integer, ByVal colOffset As Integer)
+        MyRowIndex += rowOffset
+        MyColumnIndex += colOffset
+    End Sub
 
-	Friend Sub SetRow(ByVal row As Integer)
-		MyRowIndex = row
-	End Sub
+    Friend Sub SetColumn(ByVal column As Integer)
+        MyColumnIndex = column
+    End Sub
 
-	Protected Overrides Function ConvertInternal(ByVal convertType As OperandType) As IOperand
-		Return Me.TargetOperand.Convert(convertType)
-	End Function
+    Friend Sub SetRow(ByVal row As Integer)
+        MyRowIndex = row
+    End Sub
 
-	Protected Overrides Function EqualsGridReference(ByVal ref As SheetReference) As Boolean
-		Dim cellRef As CellReference = ref
-		Return MyRowIndex = cellRef.MyRowIndex And MyColumnIndex = cellRef.MyColumnIndex
-	End Function
+    Protected Overrides Function ConvertInternal(ByVal convertType As OperandType) As IOperand
+        Return Me.TargetOperand.Convert(convertType)
+    End Function
 
-	Public Sub OnFormulaRecalculate(ByVal target As Formula) Implements IFormulaSelfReference.OnFormulaRecalculate
-		Dim result As Object = target.Evaluate()
-		Me.Sheet.SetFormulaResult(result, MyRowIndex, MyColumnIndex)
-		MyBase.OnRecalculated()
-	End Sub
+    Protected Overrides Function EqualsGridReference(ByVal ref As SheetReference) As Boolean
+        Dim cellRef As CellReference = ref
+        Return MyRowIndex = cellRef.MyRowIndex And MyColumnIndex = cellRef.MyColumnIndex
+    End Function
 
-	Protected Overrides Function GetHashData() As Byte()
-		Dim bytes(GRID_REFERENCE_HASH_SIZE + 2 + 2 - 1) As Byte
-		MyBase.GetBaseHashData(bytes)
-		MyBase.RowColumnIndexToBytes(MyRowIndex, bytes, GRID_REFERENCE_HASH_SIZE)
-		MyBase.RowColumnIndexToBytes(MyColumnIndex, bytes, GRID_REFERENCE_HASH_SIZE + 2)
-		Return bytes
-	End Function
+    Public Sub OnFormulaRecalculate(ByVal target As Formula) Implements IFormulaSelfReference.OnFormulaRecalculate
+        Dim result As Object = target.Evaluate()
+        Me.Sheet.SetFormulaResult(result, MyRowIndex, MyColumnIndex)
+        MyBase.OnRecalculated()
+    End Sub
 
-	Private ReadOnly Property DependencyManager() As DependencyManager
-		Get
-			Return Me.Engine.DependencyManager
-		End Get
-	End Property
+    Protected Overrides Function GetHashData() As Byte()
+        Dim bytes(GRID_REFERENCE_HASH_SIZE + 2 + 2 - 1) As Byte
+        MyBase.GetBaseHashData(bytes)
+        MyBase.RowColumnIndexToBytes(MyRowIndex, bytes, GRID_REFERENCE_HASH_SIZE)
+        MyBase.RowColumnIndexToBytes(MyColumnIndex, bytes, GRID_REFERENCE_HASH_SIZE + 2)
+        Return bytes
+    End Function
 
-	Private ReadOnly Property TargetOperand() As IOperand
-		Get
-			If Me.Valid = False Then
-				Return New ErrorValueOperand(ErrorValueType.Ref)
-			Else
-				Return OperandFactory.CreateDynamic(Me.TargetCellValue)
-			End If
-		End Get
-	End Property
+    Private ReadOnly Property DependencyManager() As DependencyManager
+        Get
+            Return Me.Engine.DependencyManager
+        End Get
+    End Property
 
-	Private ReadOnly Property TargetCellValue() As Object
-		Get
-			Return Me.Sheet.GetCellValue(MyRowIndex, MyColumnIndex)
-		End Get
-	End Property
+    Private ReadOnly Property TargetOperand() As IOperand
+        Get
+            If Me.Valid = False Then
+                Return New ErrorValueOperand(ErrorValueType.Ref)
+            Else
+                Return OperandFactory.CreateDynamic(Me.TargetCellValue)
+            End If
+        End Get
+    End Property
 
-	Public Overrides ReadOnly Property Range() As System.Drawing.Rectangle
-		Get
-			Return New System.Drawing.Rectangle(MyColumnIndex, MyRowIndex, 1, 1)
-		End Get
-	End Property
+    Private ReadOnly Property TargetCellValue() As Object
+        Get
+            Return Me.Sheet.GetCellValue(MyRowIndex, MyColumnIndex)
+        End Get
+    End Property
 
-	Public ReadOnly Property RowIndex() As Integer
-		Get
-			Return MyRowIndex
-		End Get
-	End Property
+    Public Overrides ReadOnly Property Range() As System.Drawing.Rectangle
+        Get
+            Return New System.Drawing.Rectangle(MyColumnIndex, MyRowIndex, 1, 1)
+        End Get
+    End Property
 
-	Public ReadOnly Property ColumnIndex() As Integer
-		Get
-			Return MyColumnIndex
-		End Get
-	End Property
+    Public ReadOnly Property RowIndex() As Integer
+        Get
+            Return MyRowIndex
+        End Get
+    End Property
+
+    Public ReadOnly Property ColumnIndex() As Integer
+        Get
+            Return MyColumnIndex
+        End Get
+    End Property
 End Class
 
 <Serializable()> _

@@ -157,7 +157,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /Y $(TargetDir)$(TargetName).* C:\Projects\Calumo11\lib</PostBuildEvent>
   </PropertyGroup>
 </Project>

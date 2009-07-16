@@ -1,5 +1,7 @@
 *.suo
 **/*.vbproj.user
+_ReSharper.*
+*.user
 
 ConsoleTester/bin/
 ConsoleTester/obj/
@@ -7,6 +9,5 @@ GridSample/bin/
 GridSample/obj/
 Tests/bin/
 Tests/obj/
-_ReSharper.*
 lib/bin
 lib/obj/
